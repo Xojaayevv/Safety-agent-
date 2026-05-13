@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fayzullohxoja — Trucking Safety Assistant</title>
+  <style>
+    /* === Asosiy sozlamalar === */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f2f5;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chat-container {
+      width: 100%;
+      max-width: 780px;
+      height: 92vh;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* === Sarlavha === */
+    .chat-header {
+      background: #1a3c5e;
+      color: white;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-icon {
+      width: 42px;
+      height: 42px;
+      background: #f0a500;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .header-text h1 { font-size: 17px; font-weight: 700; }
+    .header-text p  { font-size: 12px; color: #a8c4e0; margin-top: 2px; }
+
+    /* === Til tanlash tugmalari === */
+    .lang-switcher {
+      display: flex;
+      gap: 6px;
+      margin-left: auto;
+      align-items: center;
+    }
+
+    .lang-btn {
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.7);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .lang-btn:hover     { border-color: white; color: white; }
+    .lang-btn.active    { background: #f0a500; border-color: #f0a500; color: white; }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      background: #4caf50;
+      border-radius: 50%;
+      margin-left: 10px;
+      box-shadow: 0 0 6px #4caf50;
+      flex-shrink: 0;
+    }
+
+    /* === Xabarlar maydoni === */
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .chat-messages::-webkit-scrollbar { width: 5px; }
+    .chat-messages::-webkit-scrollbar-track { background: #f1f1f1; }
+    .chat-messages::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 10px; }
+
+    /* === Xabar === */
+    .message { display: flex; gap: 10px; max-width: 88%; }
+    .message.user { align-self: flex-end; flex-direction: row-reverse; }
+
+    .message-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+
+    .message.user .message-avatar { background: #1a3c5e; color: white; }
+    .message.bot  .message-avatar { background: #f0a500; color: white; }
+
+    .message-bubble {
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .message.user .message-bubble {
+      background: #1a3c5e; color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.bot .message-bubble {
+      background: #f7f9fc; color: #222;
+      border: 1px solid #e4e8ef;
+      border-bottom-left-radius: 4px;
+    }
+
+    /* === Javob formatlash === */
+    .response-section { margin-top: 10px; }
+    .response-section:first-child { margin-top: 0; }
+
+    .section-label {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      margin-bottom: 7px; padding: 3px 8px;
+      border-radius: 4px; display: inline-block;
+    }
+
+    .label-text  { background: #e8f0fe; color: #1a56db; }
+    .label-check { background: #e6f4ea; color: #1e7e34; }
+    .label-steps { background: #fff3e0; color: #e65100; }
+
+    .checklist { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .checklist li { display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; }
+    .checklist li::before { content: '☐'; color: #1e7e34; font-size: 15px; line-height: 1.4; flex-shrink: 0; }
+
+    .steps { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .steps li { display: flex; gap: 10px; font-size: 13.5px; align-items: flex-start; }
+
+    .step-num {
+      background: #f0a500; color: white;
+      border-radius: 50%; width: 22px; height: 22px;
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+
+    .divider { border: none; border-top: 1px solid #e4e8ef; margin: 10px 0; }
+
+    /* === Tabriq === */
+    .welcome-message { text-align: center; padding: 30px 20px; color: #6b7a8d; }
+    .welcome-message .welcome-icon { font-size: 48px; margin-bottom: 12px; }
+    .welcome-message h2 { font-size: 18px; color: #1a3c5e; margin-bottom: 8px; }
+    .welcome-message p  { font-size: 13.5px; line-height: 1.6; }
+
+    .example-questions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 16px; }
+
+    .example-btn {
+      background: #f0f4ff; border: 1px solid #c7d7f7;
+      color: #1a3c5e; padding: 7px 14px;
+      border-radius: 20px; font-size: 12.5px;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .example-btn:hover { background: #dce8ff; }
+
+    /* === Input maydoni === */
+    .chat-input-area {
+      padding: 16px 20px;
+      border-top: 1px solid #e4e8ef;
+      background: #fff;
+    }
+
+    .input-row { display: flex; gap: 10px; align-items: flex-end; }
+
+    .input-wrapper {
+      flex: 1; background: #f7f9fc;
+      border: 1.5px solid #dde3ee; border-radius: 12px;
+      display: flex; align-items: flex-end;
+      padding: 10px 14px; transition: border-color 0.2s;
+    }
+
+    .input-wrapper:focus-within { border-color: #1a3c5e; }
+
+    #userInput {
+      flex: 1; border: none; background: transparent;
+      font-size: 14px; font-family: inherit;
+      color: #222; resize: none; outline: none;
+      max-height: 120px; line-height: 1.5;
+    }
+
+    #userInput::placeholder { color: #aab4c4; }
+
+    #sendBtn {
+      width: 46px; height: 46px;
+      background: #1a3c5e; border: none; border-radius: 12px;
+      color: white; font-size: 20px; cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+
+    #sendBtn:hover   { background: #14304e; }
+    #sendBtn:active  { transform: scale(0.95); }
+    #sendBtn:disabled { background: #c0cad8; cursor: not-allowed; }
+
+    /* === Fayl yuklash tugmasi === */
+    #fileBtn {
+      width: 46px; height: 46px;
+      background: #f0f4ff; border: 1.5px solid #c7d7f7;
+      border-radius: 12px; color: #1a3c5e;
+      font-size: 20px; cursor: pointer;
+      transition: background 0.2s;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    #fileBtn:hover { background: #dce8ff; }
+
+    /* Tanlangan fayl ko'rsatkichi */
+    .file-preview {
+      display: flex; align-items: center; gap: 8px;
+      background: #f0f4ff; border: 1px solid #c7d7f7;
+      border-radius: 8px; padding: 7px 12px;
+      margin-bottom: 8px; font-size: 13px; color: #1a3c5e;
+    }
+
+    .file-preview .file-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .file-remove {
+      background: none; border: none; color: #888;
+      cursor: pointer; font-size: 16px; padding: 0 2px;
+      line-height: 1;
+    }
+    .file-remove:hover { color: #c0392b; }
+
+    /* === Yozish animatsiyasi === */
+    .typing-indicator { display: flex; gap: 10px; max-width: 88%; }
+
+    .typing-dots {
+      background: #f7f9fc; border: 1px solid #e4e8ef;
+      border-radius: 14px; border-bottom-left-radius: 4px;
+      padding: 14px 18px; display: flex; gap: 5px; align-items: center;
+    }
+
+    .typing-dots span {
+      width: 8px; height: 8px; background: #aab4c4;
+      border-radius: 50%; animation: bounce 1.2s infinite;
+    }
+
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-7px); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="chat-container">
+
+  <!-- Sarlavha -->
+  <div class="chat-header">
+    <div class="header-icon">🚛</div>
+    <div class="header-text">
+      <h1>Fayzullohxoja — Trucking Safety</h1>
+      <p id="headerSubtitle">FMCSA & DOT Compliance Assistant</p>
+    </div>
+    <!-- Til tanlash -->
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="tilOzgartir('uz')">UZ</button>
+      <button class="lang-btn"        onclick="tilOzgartir('ru')">RU</button>
+      <button class="lang-btn"        onclick="tilOzgartir('en')">EN</button>
+    </div>
+    <div class="status-dot"></div>
+  </div>
+
+  <!-- Xabarlar -->
+  <div class="chat-messages" id="chatMessages">
+    <div class="welcome-message" id="welcomeBlock">
+      <div class="welcome-icon">🛡️</div>
+      <h2 id="welcomeTitle">Xush kelibsiz!</h2>
+      <p id="welcomeText">Xavfsizlik bo'yicha istalgan savolingizni yozing.<br/>Men sizga aniq va tezkor javob beraman.</p>
+      <div class="example-questions" id="exampleBtns"></div>
+    </div>
+  </div>
+
+  <!-- Input -->
+  <div class="chat-input-area">
+    <!-- Tanlangan fayl ko'rsatkichi -->
+    <div id="filePreview" class="file-preview" style="display:none;">
+      <span>📄</span>
+      <span class="file-name" id="filePreviewName"></span>
+      <button class="file-remove" onclick="faylOchir()" title="Olib tashlash">×</button>
+    </div>
+    <div class="input-row">
+      <!-- Yashirin fayl input -->
+      <input type="file" id="fileInput" style="display:none;"
+        accept=".pdf,.docx,.txt,image/*"
+        onchange="faylTanlandi(this)" />
+      <!-- Fayl yuklash tugmasi -->
+      <button id="fileBtn" onclick="document.getElementById('fileInput').click()" title="Fayl yuklash">
+        📎
+      </button>
+      <div class="input-wrapper">
+        <textarea
+          id="userInput"
+          rows="1"
+          onkeydown="handleKeyDown(event)"
+          oninput="autoResize(this)"
+        ></textarea>
+      </div>
+      <button id="sendBtn" onclick="sendMessage()">&#10148;</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ============================================================
+  // TIL TARJIMALARI
+  // ============================================================
+
+  const TARJIMALAR = {
+    uz: {
+      subtitle:     "FMCSA & DOT Compliance Assistant",
+      welcomeTitle: "Salom! Men Fayzullohxojaman.",
+      welcomeText:  "Trucking safety va FMCSA compliance bo'yicha savolingizni yozing.<br/>Real Safety Manager kabi yordam beraman.",
+      placeholder:  "FMCSA/DOT bo'yicha savolingizni yozing...",
+      labelText:    "Tushuntirish",
+      labelCheck:   "Tekshiruv ro'yxati",
+      labelSteps:   "Qadam-baqadam ko'rsatma",
+      errorServer:  "Server bilan ulanishda xato. Server ishga tushganligini tekshiring.",
+      examples: [
+        "HOS qoidalari qanday?",
+        "DQ file da nima bo'lishi kerak?",
+        "ELD malfunction bo'lsa nima qilaman?",
+        "Roadside inspection da violation olsam?"
+      ]
+    },
+    ru: {
+      subtitle:     "FMCSA & DOT Compliance Assistant",
+      welcomeTitle: "Привет! Я Fayzullohxoja.",
+      welcomeText:  "Задайте вопрос по trucking safety и FMCSA compliance.<br/>Помогу как настоящий Safety Manager.",
+      placeholder:  "Напишите вопрос по FMCSA/DOT...",
+      labelText:    "Объяснение",
+      labelCheck:   "Контрольный список",
+      labelSteps:   "Пошаговая инструкция",
+      errorServer:  "Ошибка соединения с сервером. Проверьте, запущен ли сервер.",
+      examples: [
+        "Правила HOS для водителей",
+        "Что входит в DQ file?",
+        "Что делать при нарушении ELD?",
+        "Как оспорить violation через DataQ?"
+      ]
+    },
+    en: {
+      subtitle:     "FMCSA & DOT Compliance Assistant",
+      welcomeTitle: "Hi! I'm Fayzullohxoja.",
+      welcomeText:  "Ask me anything about trucking safety and FMCSA compliance.<br/>I'll help you like a real Safety Manager.",
+      placeholder:  "Type your FMCSA/DOT question here...",
+      labelText:    "Explanation",
+      labelCheck:   "Checklist",
+      labelSteps:   "Step-by-Step Guide",
+      errorServer:  "Connection error. Make sure the server is running.",
+      examples: [
+        "What are the HOS rules?",
+        "What documents are in a DQ file?",
+        "What to do if ELD malfunctions?",
+        "How to dispute a violation via DataQ?"
+      ]
+    }
+  };
+
+  // Joriy til
+  let JORIY_TIL = 'uz';
+
+  // ============================================================
+  // TIL ALMASHTIRISH
+  // ============================================================
+
+  function tilOzgartir(til) {
+    JORIY_TIL = til;
+    const t = TARJIMALAR[til];
+
+    // Sarlavha
+    document.getElementById('headerSubtitle').textContent = t.subtitle;
+
+    // Tabriq bloki
+    document.getElementById('welcomeTitle').textContent   = t.welcomeTitle;
+    document.getElementById('welcomeText').innerHTML      = t.welcomeText;
+    document.getElementById('userInput').placeholder      = t.placeholder;
+
+    // Namuna savollar
+    const btnsDiv = document.getElementById('exampleBtns');
+    btnsDiv.innerHTML = t.examples
+      .map(s => `<button class="example-btn" onclick="useExample(this)">${s}</button>`)
+      .join('');
+
+    // Faol tugmani belgilash
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.textContent.toLowerCase() === til);
+    });
+  }
+
+  // Sahifa yuklanganda namuna savollarni ko'rsatish
+  tilOzgartir('uz');
+
+  // ============================================================
+  // JAVOBNI HTML FORMATGA AYLANTIRISH
+  // ============================================================
+
+  function javobHtmlQil(javob) {
+    const t = TARJIMALAR[JORIY_TIL];
+
+    if (javob.xato) {
+      return `<div style="color:#c0392b;">⚠️ ${javob.xato}</div>`;
+    }
+
+    let html = `
+      <div class="response-section">
+        <span class="section-label label-text">${t.labelText}</span>
+        <p>${javob.tushuntirish}</p>
+      </div>
+    `;
+
+    if (javob.checklist && javob.checklist.length) {
+      html += `
+        <hr class="divider">
+        <div class="response-section">
+          <span class="section-label label-check">${t.labelCheck}</span>
+          <ul class="checklist">
+            ${javob.checklist.map(p => `<li>${p}</li>`).join('')}
+          </ul>
+        </div>
+      `;
+    }
+
+    if (javob.qadamlar && javob.qadamlar.length) {
+      html += `
+        <hr class="divider">
+        <div class="response-section">
+          <span class="section-label label-steps">${t.labelSteps}</span>
+          <ol class="steps">
+            ${javob.qadamlar.map((q, i) => `
+              <li><span class="step-num">${i + 1}</span><span>${q}</span></li>
+            `).join('')}
+          </ol>
+        </div>
+      `;
+    }
+
+    return html;
+  }
+
+  // ============================================================
+  // FAYL BOSHQARISH
+  // ============================================================
+
+  let TANLANGAN_FAYL = null; // { name, type, data (base64) }
+
+  function faylTanlandi(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    // 10MB dan katta faylni rad etish
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Fayl hajmi 10MB dan oshmasligi kerak.');
+      input.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      // base64 qismini ajratib olish (data:...;base64, dan keyin)
+      const base64 = e.target.result.split(',')[1];
+      TANLANGAN_FAYL = { name: file.name, type: file.type, data: base64 };
+
+      // Ko'rsatkich chiqarish
+      document.getElementById('filePreviewName').textContent = file.name;
+      document.getElementById('filePreview').style.display = 'flex';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function faylOchir() {
+    TANLANGAN_FAYL = null;
+    document.getElementById('fileInput').value = '';
+    document.getElementById('filePreview').style.display = 'none';
+  }
+
+  // ============================================================
+  // XABAR YUBORISH
+  // ============================================================
+
+  async function sendMessage() {
+    const input = document.getElementById('userInput');
+    const matn  = input.value.trim();
+
+    // Fayl ham yo'q, matn ham yo'q — yuborilmaydi
+    if (!matn && !TANLANGAN_FAYL) return;
+
+    // Foydalanuvchi xabarini ko'rsatish
+    const korinishMatn = TANLANGAN_FAYL
+      ? `📄 ${TANLANGAN_FAYL.name}${matn ? '\n' + matn : ''}`
+      : matn;
+    xabarQosh('user', korinishMatn);
+
+    input.value = '';
+    autoResize(input);
+    document.getElementById('sendBtn').disabled = true;
+
+    const typing = yozishKorsatish();
+
+    try {
+      const sorovTanasi = { message: matn, til: JORIY_TIL };
+      if (TANLANGAN_FAYL) sorovTanasi.file = TANLANGAN_FAYL;
+
+      const response = await fetch('/api/chat', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(sorovTanasi)
+      });
+
+      const javob = await response.json();
+      typing.remove();
+      xabarHtmlQosh('bot', javobHtmlQil(javob));
+
+    } catch (err) {
+      typing.remove();
+      xabarHtmlQosh('bot', `<div style="color:#c0392b;">⚠️ ${TARJIMALAR[JORIY_TIL].errorServer}</div>`);
+    }
+
+    // Faylni tozalash
+    faylOchir();
+    document.getElementById('sendBtn').disabled = false;
+  }
+
+  function xabarQosh(kim, matn) {
+    const messages = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = `message ${kim}`;
+    div.innerHTML = `
+      <div class="message-avatar">${kim === 'user' ? '👤' : '🛡️'}</div>
+      <div class="message-bubble">${matn}</div>
+    `;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function xabarHtmlQosh(kim, html) {
+    const messages = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = `message ${kim}`;
+    div.innerHTML = `
+      <div class="message-avatar">🛡️</div>
+      <div class="message-bubble">${html}</div>
+    `;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function yozishKorsatish() {
+    const messages = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = 'typing-indicator';
+    div.innerHTML = `
+      <div class="message-avatar" style="width:36px;height:36px;border-radius:50%;background:#f0a500;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🛡️</div>
+      <div class="typing-dots"><span></span><span></span><span></span></div>
+    `;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+    return div;
+  }
+
+  function handleKeyDown(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  }
+
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+  }
+
+  function useExample(btn) {
+    const input = document.getElementById('userInput');
+    input.value = btn.textContent;
+    autoResize(input);
+    input.focus();
+  }
+</script>
+
+</body>
+</html>
