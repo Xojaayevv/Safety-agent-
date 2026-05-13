@@ -155,6 +155,16 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // === logo.jpg yuborish ===
+  if (req.method === 'GET' && req.url === '/logo.jpg') {
+    try {
+      const img = fs.readFileSync(path.join(__dirname, 'logo.jpg'));
+      res.writeHead(200, { 'Content-Type': 'image/jpeg' });
+      res.end(img);
+    } catch { res.writeHead(404); res.end('logo topilmadi'); }
+    return;
+  }
+
   // === Chat API ===
   if (req.method === 'POST' && req.url === '/api/chat') {
     let body = '';
