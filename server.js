@@ -199,6 +199,73 @@ If not found, set "found": false and "company": null.`;
 const FMCSA_API_KEY = process.env.FMCSA_API_KEY;
 
 // ============================================================
+// FMCSA SAFER WEB SCRAPER (no API key needed)
+// ============================================================
+
+async function fetchSaferData(type, query) {
+  try {
+    const q = encodeURIComponent(query.trim());
+    let url;
+    if (type === 'dot')     url = `https://safer.fmcsa.dot.gov/query.asp?query_type=queryCarrierSnapshot&query_param=USDOT&query_string=${q}`;
+    else if (type === 'mc') url = `https://safer.fmcsa.dot.gov/query.asp?query_type=queryCarrierSnapshot&query_param=MC_MX&query_string=${q}`;
+    else                    url = `https://safer.fmcsa.dot.gov/query.asp?query_type=queryCarrierSnapshot&query_param=NAME&query_string=${q}`;
+
+    const resp = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)', 'Accept': 'text/html' },
+      signal: AbortSignal.timeout(12000)
+    });
+    if (!resp.ok) return null;
+    const html = await resp.text();
+    return parseSaferHtml(html, type);
+  } catch (_) { return null; }
+}
+
+function parseSaferHtml(html, type) {
+  if (!html) return null;
+  if (html.includes('No records found') || html.includes('0 records found') || html.includes('query returned 0')) return null;
+
+  const get = (labels) => {
+    for (const label of (Array.isArray(labels) ? labels : [labels])) {
+      const re = new RegExp(label + '[^<]{0,80}<\\/t[dh]>\\s*<td[^>]*>([^<]*)<', 'i');
+      const m = html.match(re);
+      if (m && m[1].trim()) return m[1].trim().replace(/&amp;/g,'&').replace(/&#(\d+);/g,(_,c)=>String.fromCharCode(+c));
+    }
+    return 'N/A';
+  };
+
+  // Multiple results for name search
+  if (type === 'name') {
+    const matchRows = [];
+    const trRe = /<tr[^>]*>([\s\S]*?)<\/tr>/gi;
+    let tr;
+    while ((tr = trRe.exec(html)) !== null) {
+      const dotM = tr[1].match(/query_param=USDOT[^>]*>(\d{4,9})/i) || tr[1].match(/USDOT.*?(\d{5,9})/i);
+      const nameM = tr[1].match(/<td[^>]*>\s*([A-Z0-9][ A-Z0-9.,&'!()-]{2,60})\s*<\/td>/i);
+      const stM   = tr[1].match(/\b([A-Z]{2})\b/);
+      if (dotM && nameM) matchRows.push({ usdot: dotM[1], name: nameM[1].trim(), state: stM ? stM[1] : '' });
+    }
+    if (matchRows.length > 1) return { multiple: true, matches: matchRows.slice(0,10) };
+  }
+
+  return {
+    name:             get(['Legal Name', 'DBA Name']),
+    usdot:            get('USDOT Number'),
+    mc:               get(['MC/MX/FF Number', 'MC Number', 'Docket Number']),
+    entity_type:      get('Entity Type'),
+    operating_status: get('Operating Status'),
+    authority_status: get(['Carrier Operation', 'Authority Status']),
+    insurance_status: get(['BIPD/Cargo Insurance', 'Insurance on File', 'BIPD Insurance']),
+    safety_rating:    get('Safety Rating'),
+    power_units:      get('Total Power Units'),
+    drivers:          get('Total Drivers'),
+    mcs150_date:      get(['MCS-150 Form Date', 'MCS-150 Date']),
+    mcs150_mileage:   get('MCS-150 Mileage'),
+    address:          get('Physical Address'),
+    phone:            get('Phone')
+  };
+}
+
+// ============================================================
 // FAYLDAN MATN CHIQARISH
 // ============================================================
 
@@ -391,24 +458,28 @@ const server = http.createServer(async (req, res) => {
     req.on('end', async () => {
       try {
         const { query, type } = JSON.parse(body); // type: 'dot' | 'mc' | 'name'
-        let fmcsaData = null;
+        let saferData = null;
 
-        // Try FMCSA API if key available
+        // 1. Try official FMCSA API if key available
         if (FMCSA_API_KEY) {
           try {
             let url;
-            if (type === 'dot')  url = `https://api.fmcsa.dot.gov/carriers/${query.trim()}?webKey=${FMCSA_API_KEY}`;
-            else if (type === 'mc') url = `https://api.fmcsa.dot.gov/carriers/docket-number/${query.trim()}?webKey=${FMCSA_API_KEY}`;
-            else url = `https://api.fmcsa.dot.gov/carriers/name/${encodeURIComponent(query.trim())}?webKey=${FMCSA_API_KEY}`;
-
+            if (type === 'dot')      url = `https://api.fmcsa.dot.gov/carriers/${query.trim()}?webKey=${FMCSA_API_KEY}`;
+            else if (type === 'mc')  url = `https://api.fmcsa.dot.gov/carriers/docket-number/${query.trim()}?webKey=${FMCSA_API_KEY}`;
+            else                     url = `https://api.fmcsa.dot.gov/carriers/name/${encodeURIComponent(query.trim())}?webKey=${FMCSA_API_KEY}`;
             const fmcsaRes = await fetch(url);
-            if (fmcsaRes.ok) fmcsaData = await fmcsaRes.json();
-          } catch (_) { /* fallback to AI */ }
+            if (fmcsaRes.ok) saferData = await fmcsaRes.json();
+          } catch (_) { /* fallback */ }
         }
 
-        const userMsg = fmcsaData
-          ? `Search type: ${type}\nQuery: ${query}\n\nFMCSA API returned this data:\n${JSON.stringify(fmcsaData, null, 2)}\n\nProcess this into the required JSON format and add your AI insight.`
-          : `Search type: ${type}\nQuery: ${query}\n\nNo live FMCSA API data available. Use your training data knowledge to provide carrier information if known, otherwise indicate not found.`;
+        // 2. If no API key or API failed — scrape SAFER web
+        if (!saferData) {
+          saferData = await fetchSaferData(type, query);
+        }
+
+        const userMsg = saferData
+          ? `Search type: ${type}\nQuery: ${query}\n\nReal FMCSA/SAFER data found:\n${JSON.stringify(saferData, null, 2)}\n\nProcess this into the required JSON format and add your AI insight.`
+          : `Search type: ${type}\nQuery: ${query}\n\nNo carrier data found from FMCSA SAFER web. Return found:false.`;
 
         const javobMatn = await groqSorov([
           { role: 'system', content: CARRIER_PROMPT },
