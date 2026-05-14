@@ -1441,9 +1441,9 @@
       </div>
       <div class="navbar-right">
         <div class="lang-switcher">
-          <button class="lang-btn active" onclick="tilOzgartir('uz')">UZ</button>
+          <button class="lang-btn"        onclick="tilOzgartir('uz')">UZ</button>
           <button class="lang-btn"        onclick="tilOzgartir('ru')">RU</button>
-          <button class="lang-btn"        onclick="tilOzgartir('en')">EN</button>
+          <button class="lang-btn active" onclick="tilOzgartir('en')">EN</button>
         </div>
       </div>
     </header>
@@ -1714,7 +1714,7 @@
     }
   };
 
-  let JORIY_TIL = 'uz';
+  let JORIY_TIL = 'en';
 
   // ============================================================
   // CHAT HISTORY — localStorage
@@ -1794,7 +1794,7 @@
     CURRENT_SID = sid;
     const s = currentSession();
     if (!s) return;
-    JORIY_TIL = s.til || 'uz';
+    JORIY_TIL = s.til || 'en';
 
     // Clear chat
     const msgs = document.getElementById('chatMessages');
@@ -1880,7 +1880,7 @@
     });
   }
 
-  tilOzgartir('uz');
+  tilOzgartir('en');
 
   // ============================================================
   // PAGE NAVIGATION
