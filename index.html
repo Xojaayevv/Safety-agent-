@@ -1284,6 +1284,94 @@
     .csa-file-chosen button:hover { color: #F87171; }
 
     /* ================================================================
+       DATAQ PAGE
+    ================================================================ */
+    .dataq-wrap {
+      display: flex; flex-direction: column; flex: 1;
+      overflow-y: auto; padding: 28px 32px;
+      gap: 20px;
+    }
+    .dataq-wrap::-webkit-scrollbar { width: 4px; }
+    .dataq-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    .dataq-header { flex-shrink: 0; }
+    .dataq-title { font-size: 20px; font-weight: 700; color: var(--text-1); }
+    .dataq-sub { font-size: 13px; color: var(--text-3); margin-top: 3px; }
+
+    .dataq-card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 22px;
+    }
+    .dataq-card-title {
+      font-size: 12px; font-weight: 600; color: var(--text-2);
+      letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 12px;
+    }
+    .dataq-drop-zone {
+      border: 1.5px dashed var(--border-hi);
+      border-radius: 10px; padding: 20px;
+      text-align: center; color: var(--text-3);
+      font-size: 13px; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .dataq-drop-zone:hover { border-color: var(--blue); background: rgba(79,142,247,0.04); color: var(--text-2); }
+    .dataq-drop-zone svg { display: block; margin: 0 auto 8px; opacity: 0.5; }
+    .dataq-file-list { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .dataq-file-tag {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--glass-md); border-radius: 8px; padding: 7px 10px;
+      font-size: 12px; color: var(--text-2);
+    }
+    .dataq-file-tag button {
+      margin-left: auto; background: none; border: none; color: var(--text-3);
+      cursor: pointer; font-size: 15px; line-height: 1; padding: 0 2px;
+    }
+    .dataq-file-tag button:hover { color: #F87171; }
+    .dataq-notes {
+      width: 100%; min-height: 80px; resize: vertical;
+      background: var(--glass-md); border: 1px solid var(--border);
+      border-radius: 10px; color: var(--text-1); font-family: var(--font);
+      font-size: 13px; padding: 12px 14px;
+      outline: none; transition: border-color 0.2s;
+    }
+    .dataq-notes:focus { border-color: var(--blue); }
+    .dataq-notes::placeholder { color: var(--text-3); }
+    .dataq-generate-btn {
+      display: flex; align-items: center; justify-content: center; gap: 9px;
+      width: 100%; padding: 13px;
+      background: var(--grad-main); border: none;
+      border-radius: 12px; color: #fff;
+      font-size: 14px; font-weight: 700; font-family: var(--font);
+      cursor: pointer; transition: opacity 0.2s;
+    }
+    .dataq-generate-btn:hover { opacity: 0.88; }
+    .dataq-generate-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .dataq-output {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 14px; padding: 22px 24px;
+      display: none;
+    }
+    .dataq-output.visible { display: block; }
+    .dataq-output-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .dataq-output-title { font-size: 13px; font-weight: 600; color: var(--text-1); }
+    .dataq-copy-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--glass-md); border: 1px solid var(--border);
+      border-radius: 8px; padding: 6px 12px;
+      color: var(--text-2); font-size: 12px; font-weight: 500;
+      font-family: var(--font); cursor: pointer; transition: background 0.2s;
+    }
+    .dataq-copy-btn:hover { background: var(--glass-hi); }
+    .dataq-letter-text {
+      font-size: 13px; color: var(--text-1); line-height: 1.75;
+      white-space: pre-wrap; font-family: 'Courier New', monospace;
+    }
+
+    /* ================================================================
        MOBILE
     ================================================================ */
     @media (max-width: 640px) {
@@ -1377,6 +1465,10 @@
       <button class="nav-item" data-page="csa" onclick="showPage('csa')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         <span class="nav-label">Violation Analyzer</span>
+      </button>
+      <button class="nav-item" data-page="dataq" onclick="showPage('dataq')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span class="nav-label">DataQ Letter</span>
       </button>
       <button class="nav-item" data-page="history" onclick="showPage('history')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
@@ -1623,6 +1715,64 @@
 
       </div><!-- end csa-scroll -->
     </div><!-- end page-csa -->
+
+    <!-- ===== PAGE: DATAQ LETTER ===== -->
+    <div id="page-dataq" class="page-view" style="display:none;">
+      <div class="dataq-wrap">
+
+        <div class="dataq-header">
+          <div class="dataq-title">DataQ Dispute Letter</div>
+          <div class="dataq-sub">Upload inspection report + evidence — AI generates a professional dispute letter</div>
+        </div>
+
+        <!-- Inspection Report Upload -->
+        <div class="dataq-card">
+          <div class="dataq-card-title">Inspection Report (Required)</div>
+          <div class="dataq-drop-zone" onclick="document.getElementById('dataqInspInput').click()">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Click to upload inspection report (PDF, image, Word)
+          </div>
+          <input type="file" id="dataqInspInput" style="display:none;" accept=".pdf,.docx,.txt,image/*" onchange="dataqAddFile(this,'insp')" />
+          <div id="dataqInspList" class="dataq-file-list"></div>
+        </div>
+
+        <!-- Supporting Evidence Upload -->
+        <div class="dataq-card">
+          <div class="dataq-card-title">Supporting Evidence (Optional — multiple files)</div>
+          <div class="dataq-drop-zone" onclick="document.getElementById('dataqEvidInput').click()">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Driver logs, maintenance records, invoices, photos, etc.
+          </div>
+          <input type="file" id="dataqEvidInput" style="display:none;" accept=".pdf,.docx,.txt,image/*" multiple onchange="dataqAddFile(this,'evid')" />
+          <div id="dataqEvidList" class="dataq-file-list"></div>
+        </div>
+
+        <!-- Additional Notes -->
+        <div class="dataq-card">
+          <div class="dataq-card-title">Additional Notes (Optional)</div>
+          <textarea class="dataq-notes" id="dataqNotes" placeholder="Explain what happened, any context, specific violations to dispute, etc."></textarea>
+        </div>
+
+        <!-- Generate Button -->
+        <button class="dataq-generate-btn" id="dataqGenBtn" onclick="dataqGenerate()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          Generate DataQ Dispute Letter
+        </button>
+
+        <!-- Output -->
+        <div class="dataq-output" id="dataqOutput">
+          <div class="dataq-output-head">
+            <span class="dataq-output-title">Generated Dispute Letter</span>
+            <button class="dataq-copy-btn" onclick="dataqCopy()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy
+            </button>
+          </div>
+          <div class="dataq-letter-text" id="dataqLetterText"></div>
+        </div>
+
+      </div>
+    </div>
 
     <!-- ===== PAGE: HISTORY ===== -->
     <div id="page-history" class="page-view" style="display:none;">
@@ -1875,9 +2025,105 @@
     document.querySelectorAll('.nav-item[data-page]').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.page === page);
     });
-    const subs = { chat: TARJIMALAR[JORIY_TIL].subtitle, csa: 'Violation Analyzer', history: 'Chat History' };
+    const subs = { chat: TARJIMALAR[JORIY_TIL].subtitle, csa: 'Violation Analyzer', dataq: 'DataQ Dispute Letter', history: 'Chat History' };
     document.getElementById('headerSubtitle').textContent = subs[page] || subs.chat;
     if (page === 'history') renderHistoryList();
+  }
+
+  // ============================================================
+  // DATAQ LETTER GENERATOR
+  // ============================================================
+
+  let DATAQ_FILES = { insp: null, evid: [] };
+
+  function dataqAddFile(input, type) {
+    const files = Array.from(input.files);
+    if (!files.length) return;
+
+    files.forEach(file => {
+      if (file.size > 10 * 1024 * 1024) { alert('Max 10MB per file'); return; }
+      const reader = new FileReader();
+      reader.onload = e => {
+        const entry = { name: file.name, type: file.type, data: e.target.result.split(',')[1] };
+        if (type === 'insp') {
+          DATAQ_FILES.insp = entry;
+          renderDataqFileList('dataqInspList', [entry], 'insp');
+        } else {
+          DATAQ_FILES.evid.push(entry);
+          renderDataqFileList('dataqEvidList', DATAQ_FILES.evid, 'evid');
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+    input.value = '';
+  }
+
+  function renderDataqFileList(listId, files, type) {
+    const el = document.getElementById(listId);
+    el.innerHTML = files.map((f, i) => `
+      <div class="dataq-file-tag">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        ${f.name}
+        <button onclick="dataqRemoveFile('${type}',${i})">×</button>
+      </div>`).join('');
+  }
+
+  function dataqRemoveFile(type, idx) {
+    if (type === 'insp') {
+      DATAQ_FILES.insp = null;
+      document.getElementById('dataqInspList').innerHTML = '';
+    } else {
+      DATAQ_FILES.evid.splice(idx, 1);
+      renderDataqFileList('dataqEvidList', DATAQ_FILES.evid, 'evid');
+    }
+  }
+
+  async function dataqGenerate() {
+    const notes = document.getElementById('dataqNotes').value.trim();
+    const files = [];
+    if (DATAQ_FILES.insp) files.push(DATAQ_FILES.insp);
+    DATAQ_FILES.evid.forEach(f => files.push(f));
+
+    if (!files.length && !notes) {
+      alert('Please upload at least the inspection report or add notes.');
+      return;
+    }
+
+    const btn = document.getElementById('dataqGenBtn');
+    const output = document.getElementById('dataqOutput');
+    const letterText = document.getElementById('dataqLetterText');
+
+    btn.disabled = true;
+    btn.textContent = 'Generating...';
+    output.classList.remove('visible');
+
+    try {
+      const res = await fetch('/api/dataq', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notes, files })
+      });
+      const data = await res.json();
+      if (data.xato) throw new Error(data.xato);
+
+      letterText.textContent = data.tushuntirish || 'No output generated.';
+      output.classList.add('visible');
+      output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+      alert('Error: ' + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg> Generate DataQ Dispute Letter`;
+    }
+  }
+
+  function dataqCopy() {
+    const text = document.getElementById('dataqLetterText').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.dataq-copy-btn');
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy`; }, 2000);
+    });
   }
 
   // ============================================================

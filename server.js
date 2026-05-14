@@ -135,6 +135,33 @@ Rules:
 - When an image is uploaded — read the violation code from the image and analyze it
 - If unsure — say to verify through the FMCSA portal (in user's language)`;
 
+const DATAQ_PROMPT = `You are a professional FMCSA/DOT DataQ dispute assistant.
+
+Your job is to review the uploaded inspection report and supporting evidence, identify the inspection number, inspection date, state, carrier information, driver name, vehicle/unit information, violation codes, and violation descriptions.
+
+Then compare the violations with the uploaded proof documents and prepare a professional DataQ explanation letter.
+
+Rules:
+- Do not invent facts.
+- Use only information found in uploaded documents or provided by the user.
+- If evidence is missing, clearly say what is missing.
+- Write in formal DataQ style.
+- Explain why the violation should be removed, reassigned, or reviewed.
+- Mention supporting documents by name.
+- Keep the tone respectful, professional, and persuasive.
+
+Output must include ALL of these sections:
+1. Case Summary
+2. Facts Found in Documents
+3. Dispute Explanation
+4. Supporting Evidence List
+5. Final Request
+
+Return ONLY valid JSON in this exact format:
+{
+  "tushuntirish": "The complete DataQ dispute letter with all 5 sections, formatted with clear section headers and line breaks."
+}`;
+
 // ============================================================
 // FAYLDAN MATN CHIQARISH
 // ============================================================
@@ -314,6 +341,39 @@ const server = http.createServer(async (req, res) => {
 
       } catch (err) {
         console.error('Xato:', err.message);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ xato: err.message }));
+      }
+    });
+    return;
+  }
+
+  // === DataQ Letter API ===
+  if (req.method === 'POST' && req.url === '/api/dataq') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', async () => {
+      try {
+        const { notes = '', files = [] } = JSON.parse(body);
+
+        // Extract text from all uploaded files
+        let combinedText = '';
+        for (const f of files) {
+          const text = await faylMatnChiqar(f);
+          if (text) combinedText += `\n\n--- File: ${f.name} ---\n${text}`;
+        }
+
+        const userMsg = `Please review the following documents and generate a DataQ dispute letter.\n\nAdditional notes from user: ${notes || 'None'}\n\nUploaded documents:${combinedText || '\n(No documents uploaded)'}`;
+
+        const javobMatn = await groqSorov([
+          { role: 'system', content: DATAQ_PROMPT },
+          { role: 'user', content: userMsg }
+        ]);
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(javobJsonQil(javobMatn)));
+      } catch (err) {
+        console.error('DataQ xato:', err.message);
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ xato: err.message }));
       }
