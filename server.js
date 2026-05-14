@@ -210,58 +210,103 @@ async function fetchSaferData(type, query) {
     else if (type === 'mc') url = `https://safer.fmcsa.dot.gov/query.asp?query_type=queryCarrierSnapshot&query_param=MC_MX&query_string=${q}`;
     else                    url = `https://safer.fmcsa.dot.gov/query.asp?query_type=queryCarrierSnapshot&query_param=NAME&query_string=${q}`;
 
+    console.log('[SAFER] Fetching:', url);
     const resp = await fetch(url, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)', 'Accept': 'text/html' },
-      signal: AbortSignal.timeout(12000)
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept': 'text/html,application/xhtml+xml',
+        'Accept-Language': 'en-US,en;q=0.9'
+      },
+      signal: AbortSignal.timeout(15000),
+      redirect: 'follow'
     });
+    console.log('[SAFER] HTTP status:', resp.status);
     if (!resp.ok) return null;
     const html = await resp.text();
+    console.log('[SAFER] HTML length:', html.length, '| snippet:', html.substring(200, 500).replace(/\s+/g,' '));
     return parseSaferHtml(html, type);
-  } catch (_) { return null; }
+  } catch (err) {
+    console.error('[SAFER] Fetch error:', err.message);
+    return null;
+  }
 }
 
 function parseSaferHtml(html, type) {
-  if (!html) return null;
-  if (html.includes('No records found') || html.includes('0 records found') || html.includes('query returned 0')) return null;
+  if (!html || html.length < 500) return null;
+  if (/no records found|0 records found|query returned 0/i.test(html)) return null;
 
-  const get = (labels) => {
-    for (const label of (Array.isArray(labels) ? labels : [labels])) {
-      const re = new RegExp(label + '[^<]{0,80}<\\/t[dh]>\\s*<td[^>]*>([^<]*)<', 'i');
-      const m = html.match(re);
-      if (m && m[1].trim()) return m[1].trim().replace(/&amp;/g,'&').replace(/&#(\d+);/g,(_,c)=>String.fromCharCode(+c));
+  // Strip HTML tags and decode entities
+  const strip = s => s
+    .replace(/<[^>]+>/g, '')
+    .replace(/&amp;/g, '&')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&#(\d+);/g, (_, c) => String.fromCharCode(+c))
+    .trim();
+
+  // Extract ALL td/th text in document order → build key-value pairs
+  const cells = [];
+  const cellRe = /<t[dh][^>]*>([\s\S]*?)<\/t[dh]>/gi;
+  let m;
+  while ((m = cellRe.exec(html)) !== null) {
+    const text = strip(m[1]);
+    if (text && text.length < 200) cells.push(text);
+  }
+
+  console.log('[SAFER] Total cells:', cells.length, '| first 30:', JSON.stringify(cells.slice(0, 30)));
+
+  if (cells.length < 4) return null;
+
+  // Build lowercase key → value map (each cell is a key, next cell is its value)
+  const kv = {};
+  for (let i = 0; i < cells.length - 1; i++) {
+    const key = cells[i].replace(/:$/, '').trim().toLowerCase();
+    if (key.length > 1 && key.length < 60) kv[key] = cells[i + 1];
+  }
+
+  const get = (...keys) => {
+    for (const k of keys) {
+      const v = kv[k.toLowerCase()];
+      if (v && v.trim() && v.trim() !== ':') return v.trim();
     }
     return 'N/A';
   };
 
-  // Multiple results for name search
+  // For name search — detect multiple results
   if (type === 'name') {
-    const matchRows = [];
-    const trRe = /<tr[^>]*>([\s\S]*?)<\/tr>/gi;
-    let tr;
-    while ((tr = trRe.exec(html)) !== null) {
-      const dotM = tr[1].match(/query_param=USDOT[^>]*>(\d{4,9})/i) || tr[1].match(/USDOT.*?(\d{5,9})/i);
-      const nameM = tr[1].match(/<td[^>]*>\s*([A-Z0-9][ A-Z0-9.,&'!()-]{2,60})\s*<\/td>/i);
-      const stM   = tr[1].match(/\b([A-Z]{2})\b/);
-      if (dotM && nameM) matchRows.push({ usdot: dotM[1], name: nameM[1].trim(), state: stM ? stM[1] : '' });
+    const dotLinks = [...html.matchAll(/query_param=USDOT&query_string=(\d+)/gi)];
+    if (dotLinks.length > 1) {
+      const matches = dotLinks.slice(0, 10).map(lm => {
+        const dot = lm[1];
+        const ctxStart = Math.max(0, lm.index - 200);
+        const ctx = html.substring(ctxStart, lm.index + 200);
+        const nm = strip(ctx.match(/<td[^>]*>([^<]{3,60})<\/td>/i)?.[1] || '');
+        return { usdot: dot, name: nm || 'Unknown', state: '' };
+      });
+      return { multiple: true, matches };
     }
-    if (matchRows.length > 1) return { multiple: true, matches: matchRows.slice(0,10) };
+  }
+
+  const name = get('legal name', 'dba name', 'carrier/broker name');
+  if (name === 'N/A') {
+    console.log('[SAFER] No company name found. kv keys:', Object.keys(kv).slice(0, 30));
+    return null;
   }
 
   return {
-    name:             get(['Legal Name', 'DBA Name']),
-    usdot:            get('USDOT Number'),
-    mc:               get(['MC/MX/FF Number', 'MC Number', 'Docket Number']),
-    entity_type:      get('Entity Type'),
-    operating_status: get('Operating Status'),
-    authority_status: get(['Carrier Operation', 'Authority Status']),
-    insurance_status: get(['BIPD/Cargo Insurance', 'Insurance on File', 'BIPD Insurance']),
-    safety_rating:    get('Safety Rating'),
-    power_units:      get('Total Power Units'),
-    drivers:          get('Total Drivers'),
-    mcs150_date:      get(['MCS-150 Form Date', 'MCS-150 Date']),
-    mcs150_mileage:   get('MCS-150 Mileage'),
-    address:          get('Physical Address'),
-    phone:            get('Phone')
+    name,
+    usdot:            get('usdot number', 'dot number', 'usdot'),
+    mc:               get('mc/mx/ff number(s)', 'mc/mx/ff number', 'mc number', 'docket number(s)'),
+    entity_type:      get('entity type'),
+    operating_status: get('operating status'),
+    authority_status: get('carrier operation', 'authority status', 'operating authority status'),
+    insurance_status: get('bipd/cargo insurance', 'bipd insurance on file', 'insurance on file'),
+    safety_rating:    get('safety rating', 'safety rating date'),
+    power_units:      get('total power units', 'power units'),
+    drivers:          get('total drivers', 'drivers'),
+    mcs150_date:      get('mcs-150 form date', 'mcs-150 date'),
+    mcs150_mileage:   get('mcs-150 mileage', 'mileage year'),
+    address:          get('physical address', 'address'),
+    phone:            get('phone', 'telephone')
   };
 }
 
