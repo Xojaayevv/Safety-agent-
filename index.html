@@ -103,14 +103,14 @@
       width: var(--sidebar-w);
       display: flex;
       flex-direction: column;
-      align-items: center;
-      padding: 18px 0 18px;
       background: rgba(8,13,26,0.85);
       border-right: 1px solid var(--border);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
       flex-shrink: 0;
       z-index: 20;
+      overflow: hidden;
+      transition: width 0.26s cubic-bezier(.4,0,.2,1);
     }
 
     .sidebar-logo {
@@ -1282,27 +1282,28 @@
     }
 
     /* ================================================================
-       HISTORY PANEL
+       SIDEBAR EXPANSION FOR HISTORY
     ================================================================ */
-    .history-panel {
-      position: fixed;
-      top: 0; left: var(--sidebar-w);
-      width: 280px; height: 100vh;
-      background: rgba(10, 14, 30, 0.97);
-      backdrop-filter: blur(20px);
-      border-right: 1px solid var(--border);
-      z-index: 200;
-      display: flex; flex-direction: column;
-      transform: translateX(-110%);
-      transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+    .sidebar {
+      transition: width 0.26s cubic-bezier(.4,0,.2,1);
     }
-    .history-panel.open { transform: translateX(0); }
-    .hist-overlay {
-      display: none; position: fixed; inset: 0; z-index: 199;
-      background: rgba(0,0,0,0.4);
+    .sidebar.hist-open {
+      width: 260px;
+      align-items: stretch;
     }
-    .history-panel.open ~ * .hist-overlay,
-    .hist-overlay.active { display: block; }
+    .sidebar-icons {
+      display: flex; flex-direction: column; align-items: center;
+      width: 70px; padding: 18px 0; flex-shrink: 0; flex: 1;
+    }
+    .sidebar.hist-open .sidebar-icons { display: none; }
+    .sidebar-hist {
+      display: none; flex-direction: column; flex: 1; min-width: 0;
+    }
+    .sidebar.hist-open .sidebar-hist { display: flex; }
+
+    /* ================================================================
+       HISTORY PANEL (inside sidebar)
+    ================================================================ */
     .hist-panel-head {
       display: flex; align-items: center; justify-content: space-between;
       padding: 18px 16px 12px;
@@ -1349,7 +1350,7 @@
       text-align: center; color: var(--text-3); font-size: 12px; padding: 24px 0;
     }
     @media (max-width: 640px) {
-      .history-panel { left: 0; }
+      .sidebar.hist-open { width: 100vw; position: fixed; z-index: 300; top: 0; left: 0; height: 100vh; }
     }
   </style>
 </head>
@@ -1363,58 +1364,62 @@
 <div class="app-layout">
 
   <!-- ========================= SIDEBAR ========================= -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <img src="/logo.jpg" alt="AG Safety" />
-    </div>
-    <div class="sidebar-sep"></div>
-    <nav class="sidebar-nav">
-      <button class="nav-item active" data-page="chat" onclick="showPage('chat')" title="Chat">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-        </svg>
-      </button>
-      <button class="nav-item" data-page="csa" onclick="showPage('csa')" title="CSA Points">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
-      </button>
-      <button class="nav-item" onclick="toggleHistoryPanel()" title="Chat History">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/>
-        </svg>
-      </button>
-    </nav>
-    <div class="sidebar-foot">
-      <button class="nav-item" onclick="startNewChat()" title="New Chat">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-        </svg>
-      </button>
-      <button class="nav-item" title="Settings">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-        </svg>
-      </button>
-    </div>
-  </aside>
+  <aside class="sidebar" id="sidebar">
 
-  <!-- ========================= HISTORY PANEL ========================= -->
-  <div id="historyPanel" class="history-panel">
-    <div class="hist-panel-head">
-      <span>Conversations</span>
-      <button class="hist-close-btn" onclick="toggleHistoryPanel()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+    <!-- ICON NAV (default state) -->
+    <div class="sidebar-icons">
+      <div class="sidebar-logo">
+        <img src="/logo.jpg" alt="AG Safety" />
+      </div>
+      <div class="sidebar-sep"></div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-page="chat" onclick="showPage('chat')" title="Chat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        </button>
+        <button class="nav-item" data-page="csa" onclick="showPage('csa')" title="CSA Points">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </button>
+        <button class="nav-item" onclick="toggleHistoryPanel()" title="Chat History">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/>
+          </svg>
+        </button>
+      </nav>
+      <div class="sidebar-foot">
+        <button class="nav-item" onclick="startNewChat()" title="New Chat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </button>
+        <button class="nav-item" title="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
+      </div>
     </div>
-    <button class="hist-new-btn" onclick="startNewChat();toggleHistoryPanel()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      New Chat
-    </button>
-    <div id="historyList" class="hist-list"></div>
-  </div>
-  <div id="histOverlay" class="hist-overlay" onclick="toggleHistoryPanel()"></div>
+
+    <!-- HISTORY PANEL (expanded state, inside sidebar) -->
+    <div class="sidebar-hist">
+      <div class="hist-panel-head">
+        <span>Conversations</span>
+        <button class="hist-close-btn" onclick="toggleHistoryPanel()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <button class="hist-new-btn" onclick="startNewChat();toggleHistoryPanel()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New Chat
+      </button>
+      <div id="historyList" class="hist-list"></div>
+    </div>
+
+  </aside>
 
   <!-- ========================= MAIN ========================= -->
   <main class="main-content">
@@ -1822,10 +1827,11 @@
   }
 
   function toggleHistoryPanel() {
-    const panel = document.getElementById('historyPanel');
-    const overlay = document.getElementById('histOverlay');
-    if (panel) panel.classList.toggle('open');
-    if (overlay) overlay.style.display = panel && panel.classList.contains('open') ? 'block' : 'none';
+    const sb = document.getElementById('sidebar');
+    if (sb) {
+      sb.classList.toggle('hist-open');
+      if (sb.classList.contains('hist-open')) renderHistoryList();
+    }
   }
 
   // Init on load
