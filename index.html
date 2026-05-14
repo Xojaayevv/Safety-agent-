@@ -842,6 +842,362 @@
     .oos-y { color: #F87171; font-size: 11px; font-weight: 600; }
     .oos-n { color: var(--text-3); font-size: 11px; }
 
+    /* CSA TOP ROW */
+    .csa-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .csa-search-filters {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+      min-width: 260px;
+      max-width: 520px;
+    }
+    .csa-search-bar {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 14px;
+      transition: border-color 0.2s;
+    }
+    .csa-search-bar:focus-within { border-color: rgba(79,142,247,0.4); }
+    .csa-search-bar svg { color: var(--text-3); flex-shrink: 0; }
+    .csa-search-input {
+      flex: 1; border: none; background: transparent;
+      font-size: 13.5px; font-family: var(--font); color: var(--text-1);
+      outline: none;
+    }
+    .csa-search-input::placeholder { color: var(--text-3); }
+    .csa-clear-btn {
+      background: none; border: none; color: var(--text-3);
+      font-size: 18px; cursor: pointer; line-height: 1; padding: 0;
+      transition: color 0.2s;
+    }
+    .csa-clear-btn:hover { color: var(--text-1); }
+    .csa-filters-row { display: flex; gap: 8px; }
+    .csa-select {
+      flex: 1;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 12.5px;
+      font-family: var(--font);
+      color: var(--text-2);
+      outline: none;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%233D4F67' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 28px;
+    }
+    .csa-select:focus { border-color: rgba(79,142,247,0.4); }
+    .csa-select option { background: #0C1220; }
+
+    /* UPLOAD COMPACT */
+    .csa-upload-compact {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(79,142,247,0.05);
+      border: 1px solid rgba(79,142,247,0.12);
+      border-radius: 12px;
+      padding: 11px 16px;
+      font-size: 12.5px;
+      color: var(--text-2);
+      flex-wrap: wrap;
+    }
+    .csa-upload-compact svg { color: var(--blue); flex-shrink: 0; }
+    .csa-upload-compact span { flex: 1; min-width: 200px; }
+    .csa-upload-chosen {
+      display: flex; align-items: center; gap: 6px;
+      color: #7DB4FC; font-size: 12px;
+    }
+    .csa-upload-chosen button {
+      background: none; border: none; color: var(--text-3);
+      font-size: 16px; cursor: pointer; padding: 0; line-height: 1;
+    }
+    .csa-upload-chosen button:hover { color: #F87171; }
+    .csa-upload-btn {
+      background: rgba(79,142,247,0.12);
+      border: 1px solid rgba(79,142,247,0.25);
+      border-radius: 8px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--font);
+      padding: 5px 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .csa-upload-btn:hover { background: rgba(79,142,247,0.2); }
+    .csa-upload-btn-analyze {
+      background: var(--grad-send);
+      border-color: transparent;
+      color: white;
+    }
+    .csa-upload-btn-analyze:hover { opacity: 0.9; }
+
+    /* RESULTS TABLE */
+    .csa-tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .csa-tbl th {
+      text-align: left;
+      padding: 10px 14px;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .csa-tbl td {
+      padding: 10px 14px;
+      color: var(--text-2);
+      border-bottom: 1px solid rgba(255,255,255,0.025);
+      vertical-align: middle;
+    }
+    .csa-tbl tr:last-child td { border-bottom: none; }
+    .csa-tbl tr:hover td { background: rgba(255,255,255,0.025); cursor: pointer; }
+    .csa-tbl td.td-code {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: var(--cyan);
+      white-space: nowrap;
+    }
+    .csa-tbl td.td-desc { color: var(--text-1); font-size: 13px; }
+    .view-btn {
+      background: none; border: none;
+      color: var(--blue); font-size: 12px;
+      font-weight: 600; font-family: var(--font);
+      cursor: pointer; padding: 5px 10px;
+      border-radius: 7px;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .view-btn:hover { background: rgba(79,142,247,0.1); }
+
+    /* BASIC BADGES (table) */
+    .tbl-basic {
+      font-size: 10.5px; font-weight: 600;
+      padding: 3px 8px; border-radius: 5px;
+      white-space: nowrap;
+    }
+    .tb-unsafe  { background: rgba(239,68,68,0.12); color: #F87171; }
+    .tb-hos     { background: rgba(79,142,247,0.12); color: #60A5FA; }
+    .tb-vehicle { background: rgba(234,179,8,0.12);  color: #FCD34D; }
+    .tb-driver  { background: rgba(123,108,246,0.12);color: #A78BFA; }
+    .tb-drug    { background: rgba(239,68,68,0.1);   color: #FC8181; }
+    .tb-hm      { background: rgba(34,211,238,0.1);  color: #67E8F9; }
+
+    /* OOS TABLE BADGES */
+    .oos-badge-y { font-size: 11.5px; font-weight: 600; color: #F87171; }
+    .oos-badge-n { font-size: 11.5px; color: var(--text-3); }
+
+    /* DETAIL PANEL */
+    .csa-detail-panel { animation: fadeUp 0.3s ease both; }
+
+    .cdp-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .cdp-head-left { display: flex; align-items: center; gap: 8px; flex: 1; flex-wrap: wrap; }
+    .cdp-code {
+      font-family: 'Courier New', monospace;
+      font-size: 16px; font-weight: 700;
+      color: var(--cyan);
+    }
+    .cdp-basic-badge, .cdp-oos-badge {
+      font-size: 11px; font-weight: 600;
+      padding: 3px 9px; border-radius: 6px;
+    }
+    .cdp-close {
+      background: var(--glass-md); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text-2);
+      width: 28px; height: 28px; font-size: 16px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; flex-shrink: 0;
+    }
+    .cdp-close:hover { background: rgba(248,113,113,0.15); color: #F87171; border-color: rgba(248,113,113,0.3); }
+    .cdp-desc { font-size: 14px; color: var(--text-2); margin-bottom: 16px; line-height: 1.5; }
+
+    .cdp-controls {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .cdp-oos-toggle {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 13px; color: var(--text-2);
+      cursor: pointer; user-select: none;
+    }
+    .cdp-oos-toggle input { accent-color: var(--blue); width: 15px; height: 15px; cursor: pointer; }
+    .cdp-date-wrap {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .cdp-date-wrap label { font-size: 12.5px; color: var(--text-2); white-space: nowrap; }
+    .cdp-date-input {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 7px 12px;
+      font-size: 13px;
+      font-family: var(--font);
+      color: var(--text-1);
+      outline: none;
+      transition: border-color 0.2s;
+      color-scheme: dark;
+    }
+    .cdp-date-input:focus { border-color: rgba(79,142,247,0.4); }
+
+    /* SMS CONTRIBUTION */
+    .cdp-sms-block {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 18px;
+    }
+    .cdp-sms-label {
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: var(--text-3); margin-bottom: 8px;
+    }
+    .cdp-pts-big {
+      font-size: 56px; font-weight: 800;
+      letter-spacing: -2px;
+      color: var(--text-1);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+    .cdp-drop-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .cdp-tier-pill, .cdp-age-pill, .cdp-drops-pill {
+      font-size: 11.5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      color: var(--text-2);
+    }
+
+    /* FORMULA */
+    .cdp-formula-section { margin-bottom: 20px; }
+    .cdp-formula-label {
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: var(--text-3); margin-bottom: 12px;
+    }
+    .cdp-formula {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .cdp-f-box {
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 500;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      min-width: 60px;
+      text-align: center;
+    }
+    .cdp-f-box strong { font-size: 18px; font-weight: 800; line-height: 1; }
+    .cdp-f-sev  { background: rgba(148,163,184,0.08); border: 1px solid rgba(148,163,184,0.15); color: var(--text-2); }
+    .cdp-f-oos  { background: rgba(148,163,184,0.08); border: 1px solid rgba(148,163,184,0.15); color: var(--text-2); }
+    .cdp-f-eff  { background: rgba(234,179,8,0.1); border: 1px solid rgba(234,179,8,0.2); color: #FCD34D; }
+    .cdp-f-tw   { background: rgba(79,142,247,0.1); border: 1px solid rgba(79,142,247,0.2); color: #60A5FA; }
+    .cdp-f-pts  { background: rgba(17,24,39,0.9); border: 1px solid rgba(255,255,255,0.15); color: var(--text-1); }
+    .cdp-f-op   { color: var(--text-3); font-size: 18px; font-weight: 300; }
+
+    /* DECAY TIMELINE */
+    .cdp-timeline-section { margin-top: 4px; }
+    .cdp-tl-header {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .cdp-tl-title { font-size: 14px; font-weight: 600; color: var(--text-1); }
+    .cdp-tl-range { font-size: 11.5px; color: var(--text-3); }
+    .cdp-tl-bar-wrap { margin-bottom: 16px; }
+    .cdp-tl-bar {
+      height: 10px;
+      border-radius: 6px;
+      background: linear-gradient(to right, #EF4444 0%, #F97316 25%, #EAB308 50%, #84CC16 75%, #10B981 100%);
+      position: relative;
+      margin-bottom: 6px;
+    }
+    .cdp-tl-marker {
+      position: absolute;
+      top: -4px;
+      width: 18px; height: 18px;
+      background: white;
+      border: 3px solid #1D4ED8;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 8px rgba(29,78,216,0.6);
+      transition: left 0.4s ease;
+      display: none;
+    }
+    .cdp-tl-ticks {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-3);
+    }
+    .cdp-periods {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .cdp-period {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      transition: all 0.2s;
+    }
+    .cdp-period.now {
+      border-color: rgba(29,78,216,0.5);
+      background: rgba(29,78,216,0.08);
+    }
+    .cdp-period.now .cdp-p-mult::after {
+      content: ' now';
+      font-size: 9px;
+      background: var(--blue);
+      color: white;
+      padding: 1px 5px;
+      border-radius: 4px;
+      margin-left: 4px;
+    }
+    .cdp-p-mult { font-size: 12px; font-weight: 700; color: var(--text-2); margin-bottom: 2px; }
+    .cdp-p-sub  { font-size: 10.5px; color: var(--text-3); margin-bottom: 8px; }
+    .cdp-p-pts  { font-size: 28px; font-weight: 800; color: var(--text-1); line-height: 1; margin-bottom: 4px; }
+    .cdp-p-dates{ font-size: 10.5px; color: var(--text-3); line-height: 1.4; }
+
+    @media (max-width: 640px) {
+      .cdp-periods { grid-template-columns: repeat(2, 1fr); }
+      .cdp-formula { gap: 5px; }
+      .cdp-f-box { padding: 5px 8px; min-width: 48px; }
+    }
+
     /* CSA TABS */
     .csa-tabs {
       display: flex;
@@ -1033,142 +1389,164 @@
     <div id="page-csa" class="page-view" style="display:none;">
       <div class="csa-scroll">
 
-        <!-- Search Card -->
-        <div class="csa-card">
-          <div class="csa-page-title">CSA Violation Analyzer</div>
-          <div class="csa-page-sub">Violation kodi yozing <em>yoki</em> inspection report yuklang — barcha BASIC kategoriyalar bo'yicha to'liq tahlil</div>
-
-          <!-- Tabs -->
-          <div class="csa-tabs">
-            <button class="csa-tab active" id="tab-code" onclick="csaTabSwitch('code')">Violation Code</button>
-            <button class="csa-tab"        id="tab-file" onclick="csaTabSwitch('file')">Upload Inspection Report</button>
+        <!-- TOP: Search + Filters -->
+        <div class="csa-top-row">
+          <div>
+            <div class="csa-page-title">Search Violations</div>
+            <div class="csa-page-sub">FMCSA SMS Appendix A &nbsp;·&nbsp; <span id="csaCount">40 codes</span></div>
           </div>
-
-          <!-- Tab: Code -->
-          <div id="csaTabCode">
-            <div class="csa-input-row">
-              <input id="csaInput" class="csa-input" type="text"
-                placeholder="e.g. 395.8(a)   yoki   392.80(a), 393.75(a), 395.3(a)(1)"
-                onkeydown="if(event.key==='Enter') csaQidirish()" />
-              <button class="csa-search-btn" id="csaBtn" onclick="csaQidirish()">Tahlil qil</button>
+          <div class="csa-search-filters">
+            <div class="csa-search-bar">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input id="csaSearch" class="csa-search-input" type="text" placeholder="Search by code or description..." oninput="csaFilter()" />
+              <button class="csa-clear-btn" id="csaClearBtn" onclick="csaClear()" style="display:none;">×</button>
             </div>
-            <p style="font-size:12px;color:var(--text-3);margin-top:8px;">Bir nechta violation: vergul bilan ajrating</p>
-          </div>
-
-          <!-- Tab: File -->
-          <div id="csaTabFile" style="display:none;">
-            <input type="file" id="csaFileInput" style="display:none;"
-              accept=".pdf,.docx,.txt,image/*"
-              onchange="csaFaylTanlandi(this)" />
-            <div class="csa-upload-area" id="csaUploadArea" onclick="document.getElementById('csaFileInput').click()">
-              <div class="csa-upload-icon">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
-                </svg>
-              </div>
-              <p class="csa-upload-text">Inspection report, citation yoki logbook rasmini yuklang</p>
-              <p class="csa-upload-hint">PDF, Word, rasm (JPG/PNG) · max 10MB</p>
-            </div>
-            <div id="csaFilePreview" style="display:none;" class="csa-file-chosen">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              <span id="csaFileName"></span>
-              <button onclick="csaFaylOchir()">×</button>
-            </div>
-            <div style="margin-top:12px;">
-              <button class="csa-search-btn" id="csaFileBtn" onclick="csaFaylTahlil()" disabled>Inspection ni tahlil qil</button>
+            <div class="csa-filters-row">
+              <select id="filterBasic" class="csa-select" onchange="csaFilter()">
+                <option value="">All BASICs</option>
+                <option>Unsafe Driving</option>
+                <option>HOS Compliance</option>
+                <option>Vehicle Maintenance</option>
+                <option>Driver Fitness</option>
+                <option>Drug &amp; Alcohol</option>
+                <option>Hazardous Materials</option>
+              </select>
+              <select id="filterOOS" class="csa-select" onchange="csaFilter()">
+                <option value="">Any OOS status</option>
+                <option value="oos">OOS violations</option>
+                <option value="nonoos">Non-OOS only</option>
+              </select>
             </div>
           </div>
         </div>
 
-        <!-- AI Result (hidden until search) -->
-        <div id="csaResult"></div>
+        <!-- Upload Card (compact) -->
+        <div class="csa-upload-compact">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span>Inspection report yoki citation rasmini yuklang — AI barcha violations ni tahlil qiladi</span>
+          <input type="file" id="csaFileInput" style="display:none;" accept=".pdf,.docx,.txt,image/*" onchange="csaFaylTanlandi(this)" />
+          <div id="csaFilePreview" style="display:none;" class="csa-upload-chosen">
+            <span id="csaFileName"></span>
+            <button onclick="csaFaylOchir()">×</button>
+          </div>
+          <button class="csa-upload-btn" id="csaUploadTrigger" onclick="document.getElementById('csaFileInput').click()">Upload</button>
+          <button class="csa-upload-btn csa-upload-btn-analyze" id="csaFileBtn" onclick="csaFaylTahlil()" style="display:none;">Analyze</button>
+        </div>
 
-        <!-- Quick Reference Table -->
+        <!-- AI result output -->
+        <div id="csaAiResult"></div>
+
+        <!-- Results Table -->
         <div class="csa-card">
-          <div class="csa-ref-title">Tez-ma'lumotnoma — Eng ko'p uchraydigan violations <span>CSA Points Guide July 2023</span></div>
+          <table class="csa-tbl" id="csaTable">
+            <thead>
+              <tr>
+                <th>CODE</th>
+                <th>DESCRIPTION</th>
+                <th>BASIC</th>
+                <th>PTS</th>
+                <th>OOS</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="csaTableBody"></tbody>
+          </table>
+          <div id="csaNoResults" style="display:none;padding:24px;text-align:center;color:var(--text-3);font-size:13px;">No violations found matching your search.</div>
+        </div>
 
-          <!-- UNSAFE DRIVING -->
-          <div class="csa-basic-group">
-            <div class="csa-basic-label basic-unsafe">Unsafe Driving</div>
-            <table class="csa-table">
-              <thead><tr><th>Code</th><th>Description</th><th>CSA</th><th>OOS</th></tr></thead>
-              <tbody>
-                <tr><td>392.80(a)</td><td>Texting While Driving</td><td><span class="pts-badge pts-10">10</span></td><td><span class="oos-n">No</span></td></tr>
-                <tr><td>392.82(a)(1)</td><td>Hand-held Cell Phone</td><td><span class="pts-badge pts-10">10</span></td><td><span class="oos-n">No</span></td></tr>
-                <tr><td>392.2R</td><td>Reckless Driving</td><td><span class="pts-badge pts-10">10</span></td><td><span class="oos-n">No</span></td></tr>
-                <tr><td>392.2-SLLS4</td><td>Speeding 15+ mph Over</td><td><span class="pts-badge pts-10">10</span></td><td><span class="oos-n">No</span></td></tr>
-                <tr><td>392.16</td><td>No Seatbelt (Driver)</td><td><span class="pts-badge pts-7">7</span></td><td><span class="oos-n">No</span></td></tr>
-                <tr><td>392.2-SLLS3</td><td>Speeding 11-14 mph Over</td><td><span class="pts-badge pts-7">7</span></td><td><span class="oos-n">No</span></td></tr>
-                <tr><td>392.2FC</td><td>Following Too Close</td><td><span class="pts-badge pts-5">5</span></td><td><span class="oos-n">No</span></td></tr>
-                <tr><td>392.2-SLLS2</td><td>Speeding 6-10 mph Over</td><td><span class="pts-badge pts-4">4</span></td><td><span class="oos-n">No</span></td></tr>
-              </tbody>
-            </table>
+        <!-- Detail Panel (decay calculator) -->
+        <div id="csaDetail" class="csa-card csa-detail-panel" style="display:none;">
+          <!-- Header -->
+          <div class="cdp-head">
+            <div class="cdp-head-left">
+              <span class="cdp-code" id="cdpCode"></span>
+              <span class="cdp-basic-badge" id="cdpBasicBadge"></span>
+              <span class="cdp-oos-badge" id="cdpOosBadge"></span>
+            </div>
+            <button class="cdp-close" onclick="csaDetailClose()">×</button>
+          </div>
+          <p class="cdp-desc" id="cdpDesc"></p>
+
+          <!-- OOS toggle + date -->
+          <div class="cdp-controls">
+            <label class="cdp-oos-toggle" id="cdpOosToggleWrap" style="display:none;">
+              <input type="checkbox" id="cdpOosCheck" onchange="cdpCalc()" />
+              <span>OOS was issued (+2 pts)</span>
+            </label>
+            <div class="cdp-date-wrap">
+              <label>Inspection Date</label>
+              <input type="date" id="cdpDate" class="cdp-date-input" onchange="cdpCalc()" />
+            </div>
           </div>
 
-          <!-- HOS -->
-          <div class="csa-basic-group">
-            <div class="csa-basic-label basic-hos">HOS Compliance</div>
-            <table class="csa-table">
-              <thead><tr><th>Code</th><th>Description</th><th>CSA</th><th>OOS</th></tr></thead>
-              <tbody>
-                <tr><td>395.13(d)</td><td>Driving After OOS Order</td><td><span class="pts-badge pts-10">10</span></td><td><span class="oos-y">Yes</span></td></tr>
-                <tr><td>395.3(a)(1)</td><td>11-Hour Drive Limit</td><td><span class="pts-badge pts-7">7</span></td><td><span class="oos-y">Yes*</span></td></tr>
-                <tr><td>395.3(a)(2)</td><td>14-Hour On-Duty Limit</td><td><span class="pts-badge pts-7">7</span></td><td><span class="oos-y">Yes*</span></td></tr>
-                <tr><td>395.3(a)(3)(ii)</td><td>30-Minute Rest Break</td><td><span class="pts-badge pts-7">7</span></td><td><span class="oos-y">Yes</span></td></tr>
-                <tr><td>395.3(b)(2)</td><td>70hr / 8-Day Limit</td><td><span class="pts-badge pts-7">7</span></td><td><span class="oos-y">Yes*</span></td></tr>
-                <tr><td>395.8(e)</td><td>Falsified / False Logs</td><td><span class="pts-badge pts-7">7</span></td><td><span class="oos-n">No</span></td></tr>
-                <tr><td>395.8(a)</td><td>No Logbook / ELD Record</td><td><span class="pts-badge pts-5">5</span></td><td><span class="oos-n">No</span></td></tr>
-                <tr><td>395.8(k)(2)</td><td>Missing Supporting Docs (7 days)</td><td><span class="pts-badge pts-5">5</span></td><td><span class="oos-n">No</span></td></tr>
-              </tbody>
-            </table>
+          <!-- SMS Contribution -->
+          <div class="cdp-sms-block">
+            <div class="cdp-sms-label">SMS POINT CONTRIBUTION</div>
+            <div class="cdp-pts-big" id="cdpPtsBig">—</div>
+            <div class="cdp-drop-row">
+              <span class="cdp-tier-pill" id="cdpTierPill"></span>
+              <span class="cdp-age-pill" id="cdpAgePill"></span>
+              <span class="cdp-drops-pill" id="cdpDropsPill"></span>
+            </div>
           </div>
 
-          <!-- VEHICLE MAINTENANCE -->
-          <div class="csa-basic-group">
-            <div class="csa-basic-label basic-vehicle">Vehicle Maintenance</div>
-            <table class="csa-table">
-              <thead><tr><th>Code</th><th>Description</th><th>CSA</th><th>OOS</th></tr></thead>
-              <tbody>
-                <tr><td>396.9(c)(2)</td><td>Operating Vehicle Under OOS Order</td><td><span class="pts-badge pts-10">10</span></td><td><span class="oos-y">Yes</span></td></tr>
-                <tr><td>393.75(a)</td><td>Flat / Underinflated Tire</td><td><span class="pts-badge pts-8">8</span></td><td><span class="oos-y">Yes</span></td></tr>
-                <tr><td>393.75(a)(1)</td><td>Tire with Exposed Ply / Cord</td><td><span class="pts-badge pts-8">8</span></td><td><span class="oos-y">Yes</span></td></tr>
-                <tr><td>393.9(BRKLAMP)</td><td>Inoperative Brake Lamp</td><td><span class="pts-badge pts-5">6</span></td><td><span class="oos-n">No</span></td></tr>
-                <tr><td>393.47(e)</td><td>Brakes Out of Adjustment</td><td><span class="pts-badge pts-4">4</span></td><td><span class="oos-y">Yes*</span></td></tr>
-                <tr><td>396.17(c)</td><td>No Annual Vehicle Inspection</td><td><span class="pts-badge pts-4">4</span></td><td><span class="oos-n">No</span></td></tr>
-              </tbody>
-            </table>
+          <!-- Formula -->
+          <div class="cdp-formula-section">
+            <div class="cdp-formula-label">HOW IT ADDS UP</div>
+            <div class="cdp-formula">
+              <div class="cdp-f-box cdp-f-sev">SEVERITY <strong id="fSev">—</strong></div>
+              <span class="cdp-f-op">+</span>
+              <div class="cdp-f-box cdp-f-oos">OOS <strong id="fOos">0</strong></div>
+              <span class="cdp-f-op">=</span>
+              <div class="cdp-f-box cdp-f-eff">EFFECTIVE <strong id="fEff">—</strong></div>
+              <span class="cdp-f-op">×</span>
+              <div class="cdp-f-box cdp-f-tw">TIME WEIGHT <strong id="fTw">—</strong></div>
+              <span class="cdp-f-op">=</span>
+              <div class="cdp-f-box cdp-f-pts">POINTS <strong id="fPts">—</strong></div>
+            </div>
           </div>
 
-          <!-- DRIVER FITNESS -->
-          <div class="csa-basic-group">
-            <div class="csa-basic-label basic-driver">Driver Fitness</div>
-            <table class="csa-table">
-              <thead><tr><th>Code</th><th>Description</th><th>CSA</th><th>OOS</th></tr></thead>
-              <tbody>
-                <tr><td>390.35(b)</td><td>Fraudulent Medical Certificate</td><td><span class="pts-badge pts-10">10</span></td><td><span class="oos-y">Yes</span></td></tr>
-                <tr><td>383.51(a)</td><td>Disqualified Driver</td><td><span class="pts-badge pts-10">10</span></td><td><span class="oos-y">Yes</span></td></tr>
-                <tr><td>383.23(a)(2)</td><td>No Valid CDL</td><td><span class="pts-badge pts-8">8</span></td><td><span class="oos-y">Yes</span></td></tr>
-                <tr><td>391.41(a)(1)</td><td>No Valid Medical Certificate</td><td><span class="pts-badge pts-1">1</span></td><td><span class="oos-n">No</span></td></tr>
-              </tbody>
-            </table>
+          <!-- Decay Timeline -->
+          <div class="cdp-timeline-section" id="cdpTimelineSection" style="display:none;">
+            <div class="cdp-tl-header">
+              <span class="cdp-tl-title">Decay timeline</span>
+              <span class="cdp-tl-range" id="cdpTlRange"></span>
+            </div>
+            <div class="cdp-tl-bar-wrap">
+              <div class="cdp-tl-bar">
+                <div class="cdp-tl-marker" id="cdpMarker"></div>
+              </div>
+              <div class="cdp-tl-ticks"><span>0</span><span>6 mo</span><span>12 mo</span><span>24 mo</span></div>
+            </div>
+            <div class="cdp-periods">
+              <div class="cdp-period" id="cdp-p0">
+                <div class="cdp-p-mult">×3</div>
+                <div class="cdp-p-sub">0–6 mo</div>
+                <div class="cdp-p-pts" id="pp0">—</div>
+                <div class="cdp-p-dates" id="pd0"></div>
+              </div>
+              <div class="cdp-period" id="cdp-p1">
+                <div class="cdp-p-mult">×2</div>
+                <div class="cdp-p-sub">6–12 mo</div>
+                <div class="cdp-p-pts" id="pp1">—</div>
+                <div class="cdp-p-dates" id="pd1"></div>
+              </div>
+              <div class="cdp-period" id="cdp-p2">
+                <div class="cdp-p-mult">×1</div>
+                <div class="cdp-p-sub">12–24 mo</div>
+                <div class="cdp-p-pts" id="pp2">—</div>
+                <div class="cdp-p-dates" id="pd2"></div>
+              </div>
+              <div class="cdp-period" id="cdp-p3">
+                <div class="cdp-p-mult">×0</div>
+                <div class="cdp-p-sub">&gt;24 mo</div>
+                <div class="cdp-p-pts">0</div>
+                <div class="cdp-p-dates" id="pd3"></div>
+              </div>
+            </div>
           </div>
+        </div>
 
-          <!-- DRUG & ALCOHOL -->
-          <div class="csa-basic-group">
-            <div class="csa-basic-label basic-drug">Drug &amp; Alcohol</div>
-            <table class="csa-table">
-              <thead><tr><th>Code</th><th>Description</th><th>CSA</th><th>OOS</th></tr></thead>
-              <tbody>
-                <tr><td>392.4(a)</td><td>Drug Use / Possession</td><td><span class="pts-badge pts-10">10</span></td><td><span class="oos-y">Yes</span></td></tr>
-                <tr><td>390.3(e)(3)</td><td>Clearinghouse Prohibited Driver</td><td><span class="pts-badge pts-10">10</span></td><td><span class="oos-y">Yes</span></td></tr>
-                <tr><td>392.5(a)(2)</td><td>DUI / Under Influence</td><td><span class="pts-badge pts-5">5</span></td><td><span class="oos-y">Yes</span></td></tr>
-                <tr><td>392.5(a)(1)</td><td>Alcohol Open Container</td><td><span class="pts-badge pts-5">5</span></td><td><span class="oos-y">Yes</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-
-        </div><!-- end reference card -->
       </div><!-- end csa-scroll -->
     </div><!-- end page-csa -->
 
@@ -1271,66 +1649,280 @@
     document.querySelectorAll('.nav-item[data-page]').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.page === page);
     });
-    const subs = { chat: TARJIMALAR[JORIY_TIL].subtitle, csa: 'CSA Violation Analyzer' };
+    const subs = { chat: TARJIMALAR[JORIY_TIL].subtitle, csa: 'CSA Violation Lookup' };
     document.getElementById('headerSubtitle').textContent = subs[page] || subs.chat;
   }
 
   // ============================================================
-  // CSA PAGE — TAB SWITCH
+  // CSA — VIOLATIONS DATABASE
   // ============================================================
 
-  function csaTabSwitch(tab) {
-    document.getElementById('csaTabCode').style.display = tab === 'code' ? 'block' : 'none';
-    document.getElementById('csaTabFile').style.display = tab === 'file' ? 'block' : 'none';
-    document.getElementById('tab-code').classList.toggle('active', tab === 'code');
-    document.getElementById('tab-file').classList.toggle('active', tab === 'file');
+  const VDB = [
+    // Unsafe Driving
+    { code:'392.80(a)',     desc:'Texting While Driving',               basic:'Unsafe Driving',      pts:10, oos:false },
+    { code:'392.82(a)(1)', desc:'Hand-held Cell Phone',                 basic:'Unsafe Driving',      pts:10, oos:false },
+    { code:'392.2R',       desc:'Reckless Driving',                     basic:'Unsafe Driving',      pts:10, oos:false },
+    { code:'392.2-SLLS4',  desc:'Speeding 15+ mph Over Posted Limit',   basic:'Unsafe Driving',      pts:10, oos:false },
+    { code:'392.16',       desc:'No Seatbelt — Driver',                 basic:'Unsafe Driving',      pts:7,  oos:false },
+    { code:'392.2-SLLS3',  desc:'Speeding 11–14 mph Over',              basic:'Unsafe Driving',      pts:7,  oos:false },
+    { code:'392.2FC',      desc:'Following Too Close',                  basic:'Unsafe Driving',      pts:5,  oos:false },
+    { code:'392.2-SLLS2',  desc:'Speeding 6–10 mph Over',               basic:'Unsafe Driving',      pts:4,  oos:false },
+    { code:'392.2IL',      desc:'Improper Lane Change',                 basic:'Unsafe Driving',      pts:5,  oos:false },
+    { code:'392.2T',       desc:'Traffic Control Device Violation',     basic:'Unsafe Driving',      pts:5,  oos:false },
+    // HOS Compliance
+    { code:'395.13(d)',       desc:'Driving After OOS Order',              basic:'HOS Compliance',      pts:10, oos:true  },
+    { code:'395.3(a)(1)',     desc:'11-Hour Drive Limit Violation',         basic:'HOS Compliance',      pts:7,  oos:'cond'},
+    { code:'395.3(a)(2)',     desc:'14-Hour On-Duty Limit Violation',       basic:'HOS Compliance',      pts:7,  oos:'cond'},
+    { code:'395.3(a)(3)(ii)', desc:'30-Minute Rest Break Violation',        basic:'HOS Compliance',      pts:7,  oos:true  },
+    { code:'395.3(b)(2)',     desc:'70-Hour / 8-Day Limit Violation',       basic:'HOS Compliance',      pts:7,  oos:'cond'},
+    { code:'395.3(b)(1)',     desc:'60-Hour / 7-Day Limit Violation',       basic:'HOS Compliance',      pts:7,  oos:'cond'},
+    { code:'395.8(e)',        desc:'Falsified / False Logs',                basic:'HOS Compliance',      pts:7,  oos:false },
+    { code:'395.8(a)',        desc:'No Logbook / ELD Record',               basic:'HOS Compliance',      pts:5,  oos:false },
+    { code:'395.8(k)(2)',     desc:'Missing Supporting Documents (7 days)', basic:'HOS Compliance',      pts:5,  oos:false },
+    // Vehicle Maintenance
+    { code:'396.9(c)(2)',    desc:'Operating Vehicle Under OOS Order',   basic:'Vehicle Maintenance', pts:10, oos:true  },
+    { code:'393.75(a)',      desc:'Flat / Underinflated Tire',            basic:'Vehicle Maintenance', pts:8,  oos:true  },
+    { code:'393.75(a)(1)',   desc:'Tire with Exposed Ply or Cord',        basic:'Vehicle Maintenance', pts:8,  oos:true  },
+    { code:'393.207(a)',     desc:'Steering Out of Adjustment',           basic:'Vehicle Maintenance', pts:8,  oos:true  },
+    { code:'393.100(b)',     desc:'Unsecured / Improper Load',            basic:'Vehicle Maintenance', pts:10, oos:true  },
+    { code:'393.9(BRKLAMP)', desc:'Inoperative Brake Lamp',               basic:'Vehicle Maintenance', pts:6,  oos:false },
+    { code:'393.9(HDLMP)',   desc:'Inoperative Headlamp',                 basic:'Vehicle Maintenance', pts:6,  oos:false },
+    { code:'393.47(e)',      desc:'Brakes Out of Adjustment',             basic:'Vehicle Maintenance', pts:4,  oos:'cond'},
+    { code:'396.17(c)',      desc:'No Annual Vehicle Inspection',         basic:'Vehicle Maintenance', pts:4,  oos:false },
+    { code:'396.3(a)(1)',    desc:'Brakes in OOS Condition',              basic:'Vehicle Maintenance', pts:2,  oos:true  },
+    // Driver Fitness
+    { code:'390.35(b)',    desc:'Fraudulent Medical Certificate',         basic:'Driver Fitness',      pts:10, oos:true  },
+    { code:'383.51(a)',    desc:'Disqualified Driver Operating CMV',      basic:'Driver Fitness',      pts:10, oos:true  },
+    { code:'383.23(a)(2)',desc:'No Valid CDL for Vehicle Class',          basic:'Driver Fitness',      pts:8,  oos:true  },
+    { code:'391.11(b)(4)',desc:'Not Physically Qualified to Drive',       basic:'Driver Fitness',      pts:2,  oos:true  },
+    { code:'391.41(a)(1)',desc:'No Valid Medical Certificate',            basic:'Driver Fitness',      pts:1,  oos:false },
+    { code:'391.11(a)',   desc:'Driver Not Qualified',                    basic:'Driver Fitness',      pts:8,  oos:true  },
+    // Drug & Alcohol
+    { code:'392.4(a)',    desc:'Drug Use or Possession',                  basic:'Drug & Alcohol',      pts:10, oos:true  },
+    { code:'390.3(e)(3)', desc:'Clearinghouse Prohibited Driver',         basic:'Drug & Alcohol',      pts:10, oos:true  },
+    { code:'392.5(a)(2)', desc:'DUI / Under Influence of Alcohol',        basic:'Drug & Alcohol',      pts:5,  oos:true  },
+    { code:'392.5(a)(1)', desc:'Alcohol Open Container',                  basic:'Drug & Alcohol',      pts:5,  oos:true  },
+    // Hazardous Materials
+    { code:'177.800(a)',  desc:'HM Transport Requirements Violation',     basic:'Hazardous Materials', pts:5,  oos:false },
+    { code:'172.600(a)',  desc:'No Emergency Response Information',       basic:'Hazardous Materials', pts:2,  oos:false },
+    { code:'173.24(a)(1)',desc:'Package Integrity Failure',               basic:'Hazardous Materials', pts:6,  oos:true  },
+    { code:'172.504(a)',  desc:'Placarding Violation',                    basic:'Hazardous Materials', pts:4,  oos:false },
+  ];
+
+  const BASIC_CLASS = {
+    'Unsafe Driving':      'tb-unsafe',
+    'HOS Compliance':      'tb-hos',
+    'Vehicle Maintenance': 'tb-vehicle',
+    'Driver Fitness':      'tb-driver',
+    'Drug & Alcohol':      'tb-drug',
+    'Hazardous Materials': 'tb-hm'
+  };
+
+  function ptsBadgeClass(p) {
+    if (p >= 10) return 'pts-10';
+    if (p >= 8)  return 'pts-8';
+    if (p >= 7)  return 'pts-7';
+    if (p >= 5)  return 'pts-5';
+    if (p >= 4)  return 'pts-4';
+    return 'pts-1';
   }
 
+  function csaRender(list) {
+    const tbody = document.getElementById('csaTableBody');
+    const noRes = document.getElementById('csaNoResults');
+    document.getElementById('csaCount').textContent = `${list.length} codes`;
+    if (!list.length) {
+      tbody.innerHTML = '';
+      noRes.style.display = 'block';
+      return;
+    }
+    noRes.style.display = 'none';
+    tbody.innerHTML = list.map(v => {
+      const oosHtml = v.oos === false
+        ? `<span class="oos-badge-n">Non-OOS</span>`
+        : v.oos === true
+          ? `<span class="oos-badge-y">OOS</span>`
+          : `<span class="oos-badge-n">Cond. OOS</span>`;
+      return `
+        <tr onclick="csaView('${v.code.replace(/'/g,"\\'")}')">
+          <td class="td-code">${v.code}</td>
+          <td class="td-desc">${v.desc}</td>
+          <td><span class="tbl-basic ${BASIC_CLASS[v.basic]}">${v.basic}</span></td>
+          <td><span class="pts-badge ${ptsBadgeClass(v.pts)}">${v.pts}</span></td>
+          <td>${oosHtml}</td>
+          <td><button class="view-btn" onclick="event.stopPropagation();csaView('${v.code.replace(/'/g,"\\'")}')">View →</button></td>
+        </tr>`;
+    }).join('');
+  }
+
+  function csaFilter() {
+    const q      = document.getElementById('csaSearch').value.trim().toLowerCase();
+    const basic  = document.getElementById('filterBasic').value;
+    const oos    = document.getElementById('filterOOS').value;
+    document.getElementById('csaClearBtn').style.display = q ? 'block' : 'none';
+
+    const list = VDB.filter(v => {
+      if (q && !v.code.toLowerCase().includes(q) && !v.desc.toLowerCase().includes(q)) return false;
+      if (basic && v.basic !== basic) return false;
+      if (oos === 'oos'    && v.oos === false) return false;
+      if (oos === 'nonoos' && v.oos !== false) return false;
+      return true;
+    });
+    csaRender(list);
+  }
+
+  function csaClear() {
+    document.getElementById('csaSearch').value = '';
+    document.getElementById('csaClearBtn').style.display = 'none';
+    csaFilter();
+  }
+
+  // Init table on load
+  csaRender(VDB);
+
   // ============================================================
-  // CSA PAGE — VIOLATION CODE SEARCH
+  // CSA — DETAIL VIEW + DECAY CALCULATOR
   // ============================================================
 
-  async function csaQidirish() {
-    const kod = document.getElementById('csaInput').value.trim();
-    if (!kod) return;
+  let CURRENT_V = null;
 
-    const btn = document.getElementById('csaBtn');
-    btn.disabled = true;
-    btn.textContent = 'Tahlil qilinmoqda...';
+  function csaView(code) {
+    const v = VDB.find(x => x.code === code);
+    if (!v) return;
+    CURRENT_V = v;
 
-    const msg = `Quyidagi violation kod(lar)ni tahlil qil: ${kod}
+    document.getElementById('cdpCode').textContent = v.code;
+    document.getElementById('cdpDesc').textContent = v.desc;
 
-Har bir kod uchun:
-- CSA Severity Weight (ball)
-- BASIC kategoriya
-- OOS xavfi (ha/yo'q)
-- Jarima miqdori
-- DataQ dispute imkoniyati
-- Tuzatish yo'llari
+    const bBadge = document.getElementById('cdpBasicBadge');
+    bBadge.textContent = v.basic;
+    bBadge.className = `cdp-basic-badge tbl-basic ${BASIC_CLASS[v.basic]}`;
 
-Agar bir nechta kod bo'lsa — barcha BASIC kategoriyalar bo'yicha umumiy ta'sirni ham ko'rsat.`;
-
-    const resultBox = document.getElementById('csaResult');
-    resultBox.innerHTML = '<div class="csa-card" style="color:var(--text-2);font-size:13px;">Tahlil qilinmoqda...</div>';
-
-    try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg, til: JORIY_TIL })
-      });
-      const javob = await res.json();
-      resultBox.innerHTML = `<div class="csa-card csa-result-box">${javobHtmlQil(javob)}</div>`;
-    } catch (e) {
-      resultBox.innerHTML = `<div class="csa-card"><div class="error-msg">Server bilan ulanishda xato.</div></div>`;
+    const oBadge = document.getElementById('cdpOosBadge');
+    if (v.oos === true) {
+      oBadge.textContent = 'OOS';
+      oBadge.style.cssText = 'background:rgba(239,68,68,0.12);color:#F87171;border:1px solid rgba(239,68,68,0.2)';
+    } else if (v.oos === false) {
+      oBadge.textContent = 'Non-OOS';
+      oBadge.style.cssText = 'background:rgba(255,255,255,0.06);color:var(--text-3);border:1px solid var(--border)';
+    } else {
+      oBadge.textContent = 'Cond. OOS';
+      oBadge.style.cssText = 'background:rgba(234,179,8,0.1);color:#FCD34D;border:1px solid rgba(234,179,8,0.2)';
     }
 
-    btn.disabled = false;
-    btn.textContent = 'Tahlil qil';
+    const toggleWrap = document.getElementById('cdpOosToggleWrap');
+    toggleWrap.style.display = v.oos === 'cond' ? 'flex' : 'none';
+    document.getElementById('cdpOosCheck').checked = false;
+
+    document.getElementById('fSev').textContent = v.pts;
+    document.getElementById('fOos').textContent = v.oos === true ? 2 : 0;
+    document.getElementById('fEff').textContent = v.oos === true ? v.pts + 2 : v.pts;
+    document.getElementById('fTw').textContent  = '—';
+    document.getElementById('fPts').textContent = '—';
+    document.getElementById('cdpPtsBig').textContent = '—';
+    document.getElementById('cdpTierPill').textContent  = '';
+    document.getElementById('cdpAgePill').textContent   = '';
+    document.getElementById('cdpDropsPill').textContent = '';
+    document.getElementById('cdpTimelineSection').style.display = 'none';
+
+    // Default inspection date = today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('cdpDate').value = today;
+
+    const detail = document.getElementById('csaDetail');
+    detail.style.display = 'block';
+    detail.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    cdpCalc();
+  }
+
+  function csaDetailClose() {
+    document.getElementById('csaDetail').style.display = 'none';
+  }
+
+  function cdpCalc() {
+    const v = CURRENT_V;
+    if (!v) return;
+    const dateVal = document.getElementById('cdpDate').value;
+    if (!dateVal) return;
+
+    const oosBonus = (v.oos === true) ? 2
+      : (v.oos === 'cond' && document.getElementById('cdpOosCheck').checked) ? 2 : 0;
+
+    const effective = v.pts + oosBonus;
+    document.getElementById('fSev').textContent = v.pts;
+    document.getElementById('fOos').textContent = oosBonus;
+    document.getElementById('fEff').textContent = effective;
+
+    const inspDate = new Date(dateVal + 'T00:00:00');
+    const now      = new Date();
+    const msPerMonth = 1000 * 60 * 60 * 24 * 30.44;
+    const monthsAgo  = (now - inspDate) / msPerMonth;
+
+    let tw = 0;
+    if      (monthsAgo < 0)  tw = 3;
+    else if (monthsAgo < 6)  tw = 3;
+    else if (monthsAgo < 12) tw = 2;
+    else if (monthsAgo < 24) tw = 1;
+    else                     tw = 0;
+
+    const pts = effective * tw;
+    document.getElementById('fTw').textContent  = `×${tw}`;
+    document.getElementById('fPts').textContent = pts;
+    document.getElementById('cdpPtsBig').textContent = pts;
+
+    const addMonths = (d, m) => { const r = new Date(d); r.setMonth(r.getMonth() + m); return r; };
+    const fmt = d => d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+    const dropDate = addMonths(inspDate, 24);
+
+    const tierText = monthsAgo < 0 ? 'Tier: inspection in the future'
+      : monthsAgo < 6  ? 'Tier: 0–6 months (×3)'
+      : monthsAgo < 12 ? 'Tier: 6–12 months (×2)'
+      : monthsAgo < 24 ? 'Tier: 12–24 months (×1)'
+      : 'Tier: dropped (>24 months)';
+    const ageMonths = Math.max(0, monthsAgo).toFixed(1);
+    const dropsText = monthsAgo >= 24 ? 'Dropped' : `Drops ${fmt(dropDate)}`;
+
+    document.getElementById('cdpTierPill').textContent  = tierText;
+    document.getElementById('cdpAgePill').textContent   = `${ageMonths} mo old`;
+    document.getElementById('cdpDropsPill').textContent = dropsText;
+
+    // Period cards
+    const p0s = inspDate;
+    const p0e = addMonths(inspDate, 6);
+    const p1e = addMonths(inspDate, 12);
+    const p2e = addMonths(inspDate, 24);
+
+    document.getElementById('pp0').textContent = effective * 3;
+    document.getElementById('pp1').textContent = effective * 2;
+    document.getElementById('pp2').textContent = effective * 1;
+    document.getElementById('pd0').textContent = `${fmt(p0s)} → ${fmt(p0e)}`;
+    document.getElementById('pd1').textContent = `${fmt(p0e)} → ${fmt(p1e)}`;
+    document.getElementById('pd2').textContent = `${fmt(p1e)} → ${fmt(p2e)}`;
+    document.getElementById('pd3').textContent = `${fmt(p2e)}+`;
+
+    // Highlight current period
+    for (let i = 0; i < 4; i++) {
+      document.getElementById(`cdp-p${i}`).classList.remove('now');
+    }
+    const curP = monthsAgo < 0 ? 0
+      : monthsAgo < 6 ? 0
+      : monthsAgo < 12 ? 1
+      : monthsAgo < 24 ? 2 : 3;
+    document.getElementById(`cdp-p${curP}`).classList.add('now');
+
+    // Timeline marker
+    const markerPct = Math.min(100, Math.max(0, (monthsAgo / 24) * 100));
+    const marker = document.getElementById('cdpMarker');
+    marker.style.left = markerPct + '%';
+    marker.style.display = monthsAgo >= 0 ? 'block' : 'none';
+
+    document.getElementById('cdpTlRange').textContent = `Inspection ${fmt(inspDate)} → drops ${fmt(p2e)}`;
+    document.getElementById('cdpTimelineSection').style.display = 'block';
   }
 
   // ============================================================
-  // CSA PAGE — FILE UPLOAD
+  // CSA — FILE UPLOAD (AI analysis)
   // ============================================================
 
   let CSA_FAYL = null;
@@ -1339,14 +1931,13 @@ Agar bir nechta kod bo'lsa — barcha BASIC kategoriyalar bo'yicha umumiy ta'sir
     const file = input.files[0];
     if (!file) return;
     if (file.size > 10 * 1024 * 1024) { alert('Max 10MB'); input.value = ''; return; }
-
     const reader = new FileReader();
     reader.onload = (e) => {
       CSA_FAYL = { name: file.name, type: file.type, data: e.target.result.split(',')[1] };
       document.getElementById('csaFileName').textContent = file.name;
       document.getElementById('csaFilePreview').style.display = 'flex';
-      document.getElementById('csaUploadArea').style.display = 'none';
-      document.getElementById('csaFileBtn').disabled = false;
+      document.getElementById('csaUploadTrigger').style.display = 'none';
+      document.getElementById('csaFileBtn').style.display = 'inline-flex';
     };
     reader.readAsDataURL(file);
   }
@@ -1355,46 +1946,41 @@ Agar bir nechta kod bo'lsa — barcha BASIC kategoriyalar bo'yicha umumiy ta'sir
     CSA_FAYL = null;
     document.getElementById('csaFileInput').value = '';
     document.getElementById('csaFilePreview').style.display = 'none';
-    document.getElementById('csaUploadArea').style.display = 'flex';
-    document.getElementById('csaFileBtn').disabled = true;
+    document.getElementById('csaUploadTrigger').style.display = 'inline-flex';
+    document.getElementById('csaFileBtn').style.display = 'none';
   }
 
   async function csaFaylTahlil() {
     if (!CSA_FAYL) return;
-
     const btn = document.getElementById('csaFileBtn');
-    btn.disabled = true;
-    btn.textContent = 'Tahlil qilinmoqda...';
+    btn.textContent = 'Analyzing...';
+    btn.style.opacity = '0.6';
 
-    const msg = `Bu inspection report yoki citation hujjatini to'liq tahlil qil.
+    const msg = `Analyze this inspection report / citation document completely:
+1. Identify ALL violation codes
+2. For each: CSA severity weight, BASIC category, OOS risk, fine range
+3. Which BASIC categories are affected and total score impact
+4. Which violations can be disputed via DataQ
+5. Priority corrective action steps`;
 
-1. Barcha violation kodlarni aniqlang
-2. Har biri uchun: CSA ball, BASIC kategoriya, OOS xavfi, jarima miqdori
-3. Qaysi BASIC kategoriyalar ta'sirlangan — umumiy skor ta'sirini ko'rsat
-4. DataQ orqali qaysilarini e'tiroz qilish mumkin
-5. Prioritet bo'yicha eng muhim tuzatish qadamlar
-
-Inspection reportdagi barcha ma'lumotlarni hisobga ol.`;
-
-    const resultBox = document.getElementById('csaResult');
-    resultBox.innerHTML = '<div class="csa-card" style="color:var(--text-2);font-size:13px;">Inspection tahlil qilinmoqda...</div>';
+    const out = document.getElementById('csaAiResult');
+    out.innerHTML = '<div class="csa-card" style="color:var(--text-2);font-size:13px;padding:16px;">Analyzing inspection report...</div>';
 
     try {
-      const body = { message: msg, til: JORIY_TIL, file: CSA_FAYL };
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+        body: JSON.stringify({ message: msg, til: 'en', file: CSA_FAYL })
       });
       const javob = await res.json();
-      resultBox.innerHTML = `<div class="csa-card csa-result-box">${javobHtmlQil(javob)}</div>`;
-      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      out.innerHTML = `<div class="csa-card csa-result-box">${javobHtmlQil(javob)}</div>`;
+      out.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (e) {
-      resultBox.innerHTML = `<div class="csa-card"><div class="error-msg">Server bilan ulanishda xato.</div></div>`;
+      out.innerHTML = `<div class="csa-card"><div class="error-msg">Connection error.</div></div>`;
     }
 
-    btn.disabled = false;
-    btn.textContent = 'Inspection ni tahlil qil';
+    btn.textContent = 'Analyze';
+    btn.style.opacity = '1';
     csaFaylOchir();
   }
 
