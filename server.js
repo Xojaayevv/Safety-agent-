@@ -162,6 +162,42 @@ Return ONLY valid JSON in this exact format:
   "tushuntirish": "The complete DataQ dispute letter with all 5 sections, formatted with clear section headers and line breaks."
 }`;
 
+const CARRIER_PROMPT = `You are an AI-powered FMCSA Carrier Lookup Assistant for a trucking safety and compliance platform.
+
+Your task is to search and identify trucking carriers using USDOT Number, MC Number, or Company Name.
+
+IMPORTANT: Use only your training data knowledge about FMCSA carriers. Never invent specific data. If you don't have reliable data for a specific carrier, say so clearly.
+
+Always return ONLY valid JSON in this exact format:
+{
+  "found": true or false,
+  "multiple": false,
+  "matches": [],
+  "company": {
+    "name": "Legal company name or Unknown",
+    "usdot": "DOT number or N/A",
+    "mc": "MC number or N/A",
+    "entity_type": "e.g. Carrier, Broker, etc.",
+    "operating_status": "Active or Inactive or Unknown",
+    "authority_status": "Active or Inactive or Revoked or Unknown",
+    "insurance_status": "On File or Not on File or Unknown",
+    "safety_rating": "Satisfactory or Conditional or Unsatisfactory or Not Rated",
+    "power_units": "number or N/A",
+    "drivers": "number or N/A",
+    "mcs150_date": "date or N/A",
+    "mcs150_mileage": "mileage or N/A",
+    "address": "full address or N/A",
+    "phone": "phone or N/A"
+  },
+  "warnings": ["any critical warnings like inactive authority, missing insurance, OOS orders"],
+  "insight": "2-3 sentence professional AI analysis of this carrier's compliance status and any risk factors"
+}
+
+If multiple carriers match a name search, set "multiple": true and populate "matches" array with brief entries: [{"name":"...", "usdot":"...", "state":"..."}].
+If not found, set "found": false and "company": null.`;
+
+const FMCSA_API_KEY = process.env.FMCSA_API_KEY;
+
 // ============================================================
 // FAYLDAN MATN CHIQARISH
 // ============================================================
@@ -341,6 +377,47 @@ const server = http.createServer(async (req, res) => {
 
       } catch (err) {
         console.error('Xato:', err.message);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ xato: err.message }));
+      }
+    });
+    return;
+  }
+
+  // === Carrier Lookup API ===
+  if (req.method === 'POST' && req.url === '/api/carrier') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', async () => {
+      try {
+        const { query, type } = JSON.parse(body); // type: 'dot' | 'mc' | 'name'
+        let fmcsaData = null;
+
+        // Try FMCSA API if key available
+        if (FMCSA_API_KEY) {
+          try {
+            let url;
+            if (type === 'dot')  url = `https://api.fmcsa.dot.gov/carriers/${query.trim()}?webKey=${FMCSA_API_KEY}`;
+            else if (type === 'mc') url = `https://api.fmcsa.dot.gov/carriers/docket-number/${query.trim()}?webKey=${FMCSA_API_KEY}`;
+            else url = `https://api.fmcsa.dot.gov/carriers/name/${encodeURIComponent(query.trim())}?webKey=${FMCSA_API_KEY}`;
+
+            const fmcsaRes = await fetch(url);
+            if (fmcsaRes.ok) fmcsaData = await fmcsaRes.json();
+          } catch (_) { /* fallback to AI */ }
+        }
+
+        const userMsg = fmcsaData
+          ? `Search type: ${type}\nQuery: ${query}\n\nFMCSA API returned this data:\n${JSON.stringify(fmcsaData, null, 2)}\n\nProcess this into the required JSON format and add your AI insight.`
+          : `Search type: ${type}\nQuery: ${query}\n\nNo live FMCSA API data available. Use your training data knowledge to provide carrier information if known, otherwise indicate not found.`;
+
+        const javobMatn = await groqSorov([
+          { role: 'system', content: CARRIER_PROMPT },
+          { role: 'user', content: userMsg }
+        ]);
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(javobJsonQil(javobMatn)));
+      } catch (err) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ xato: err.message }));
       }
