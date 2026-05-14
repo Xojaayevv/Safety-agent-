@@ -2618,32 +2618,6 @@
       </div>
     `;
 
-    if (javob.checklist && javob.checklist.length) {
-      html += `
-        <hr class="divider">
-        <div class="response-section">
-          <span class="section-label label-check">${t.labelCheck}</span>
-          <ul class="checklist">
-            ${javob.checklist.map(p => `<li>${p}</li>`).join('')}
-          </ul>
-        </div>
-      `;
-    }
-
-    if (javob.qadamlar && javob.qadamlar.length) {
-      html += `
-        <hr class="divider">
-        <div class="response-section">
-          <span class="section-label label-steps">${t.labelSteps}</span>
-          <ol class="steps">
-            ${javob.qadamlar.map((q, i) => `
-              <li><span class="step-num">${i + 1}</span><span>${q}</span></li>
-            `).join('')}
-          </ol>
-        </div>
-      `;
-    }
-
     return html;
   }
 
