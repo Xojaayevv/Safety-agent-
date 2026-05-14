@@ -1280,6 +1280,77 @@
       .csa-scroll { padding: 16px; }
       .csa-input-row { flex-direction: column; }
     }
+
+    /* ================================================================
+       HISTORY PANEL
+    ================================================================ */
+    .history-panel {
+      position: fixed;
+      top: 0; left: var(--sidebar-w);
+      width: 280px; height: 100vh;
+      background: rgba(10, 14, 30, 0.97);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid var(--border);
+      z-index: 200;
+      display: flex; flex-direction: column;
+      transform: translateX(-110%);
+      transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+    }
+    .history-panel.open { transform: translateX(0); }
+    .hist-overlay {
+      display: none; position: fixed; inset: 0; z-index: 199;
+      background: rgba(0,0,0,0.4);
+    }
+    .history-panel.open ~ * .hist-overlay,
+    .hist-overlay.active { display: block; }
+    .hist-panel-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 16px 12px;
+      font-size: 13px; font-weight: 600; color: var(--text-1);
+      border-bottom: 1px solid var(--border);
+    }
+    .hist-close-btn {
+      background: none; border: none; color: var(--text-3);
+      cursor: pointer; padding: 4px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      transition: color 0.2s;
+    }
+    .hist-close-btn:hover { color: var(--text-1); }
+    .hist-new-btn {
+      margin: 12px 12px 8px;
+      display: flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--blue), var(--violet));
+      border: none; color: #fff; font-size: 12px; font-weight: 600;
+      padding: 9px 14px; border-radius: 10px; cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .hist-new-btn:hover { opacity: 0.85; }
+    .hist-list {
+      flex: 1; overflow-y: auto; padding: 4px 8px 16px;
+    }
+    .hist-list::-webkit-scrollbar { width: 4px; }
+    .hist-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    .hist-item {
+      padding: 10px 10px;
+      border-radius: 10px; cursor: pointer;
+      margin-bottom: 3px;
+      transition: background 0.15s;
+    }
+    .hist-item:hover { background: rgba(255,255,255,0.05); }
+    .hist-item.active { background: rgba(99,102,241,0.15); }
+    .hist-title {
+      font-size: 12.5px; color: var(--text-1); font-weight: 500;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .hist-meta {
+      font-size: 11px; color: var(--text-3); margin-top: 2px;
+    }
+    .hist-empty {
+      text-align: center; color: var(--text-3); font-size: 12px; padding: 24px 0;
+    }
+    @media (max-width: 640px) {
+      .history-panel { left: 0; }
+    }
   </style>
 </head>
 <body>
@@ -1308,8 +1379,18 @@
           <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
         </svg>
       </button>
+      <button class="nav-item" onclick="toggleHistoryPanel()" title="Chat History">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/>
+        </svg>
+      </button>
     </nav>
     <div class="sidebar-foot">
+      <button class="nav-item" onclick="startNewChat()" title="New Chat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+      </button>
       <button class="nav-item" title="Settings">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"/>
@@ -1318,6 +1399,22 @@
       </button>
     </div>
   </aside>
+
+  <!-- ========================= HISTORY PANEL ========================= -->
+  <div id="historyPanel" class="history-panel">
+    <div class="hist-panel-head">
+      <span>Conversations</span>
+      <button class="hist-close-btn" onclick="toggleHistoryPanel()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <button class="hist-new-btn" onclick="startNewChat();toggleHistoryPanel()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New Chat
+    </button>
+    <div id="historyList" class="hist-list"></div>
+  </div>
+  <div id="histOverlay" class="hist-overlay" onclick="toggleHistoryPanel()"></div>
 
   <!-- ========================= MAIN ========================= -->
   <main class="main-content">
@@ -1613,6 +1710,146 @@
   };
 
   let JORIY_TIL = 'uz';
+
+  // ============================================================
+  // CHAT HISTORY — localStorage
+  // ============================================================
+
+  const STORAGE_KEY = 'fayzu_sessions_v2';
+  let SESSIONS = [];       // barcha sessionlar
+  let CURRENT_SID = null;  // joriy session id
+
+  function genId() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  }
+
+  function loadSessions() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) SESSIONS = JSON.parse(raw);
+    } catch { SESSIONS = []; }
+  }
+
+  function saveSessions() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(SESSIONS)); } catch {}
+  }
+
+  function currentSession() {
+    return SESSIONS.find(s => s.id === CURRENT_SID);
+  }
+
+  function newSession() {
+    const s = { id: genId(), title: 'New chat', til: JORIY_TIL, ts: Date.now(), messages: [] };
+    SESSIONS.unshift(s);
+    CURRENT_SID = s.id;
+    saveSessions();
+    return s;
+  }
+
+  function sessionAddMsg(role, content, htmlContent) {
+    const s = currentSession();
+    if (!s) return;
+    s.messages.push({ role, content, html: htmlContent || '' });
+    if (s.messages.length === 2) {
+      // title = user's first message (truncated)
+      const firstUser = s.messages.find(m => m.role === 'user');
+      if (firstUser) s.title = firstUser.content.slice(0, 48) + (firstUser.content.length > 48 ? '…' : '');
+    }
+    saveSessions();
+    renderHistoryList();
+  }
+
+  function getContextHistory() {
+    const s = currentSession();
+    if (!s) return [];
+    return s.messages.slice(-20).map(m => ({ role: m.role, content: m.content }));
+  }
+
+  // Render sidebar history list
+  function renderHistoryList() {
+    const list = document.getElementById('historyList');
+    if (!list) return;
+    if (!SESSIONS.length) {
+      list.innerHTML = '<div class="hist-empty">No conversations yet</div>';
+      return;
+    }
+    list.innerHTML = SESSIONS.slice(0, 40).map(s => `
+      <div class="hist-item ${s.id === CURRENT_SID ? 'active' : ''}" onclick="openSession('${s.id}')">
+        <div class="hist-title">${escHtml(s.title)}</div>
+        <div class="hist-meta">${new Date(s.ts).toLocaleDateString()}</div>
+      </div>
+    `).join('');
+  }
+
+  function escHtml(t) {
+    return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function openSession(sid) {
+    CURRENT_SID = sid;
+    const s = currentSession();
+    if (!s) return;
+    JORIY_TIL = s.til || 'uz';
+
+    // Clear chat
+    const msgs = document.getElementById('chatMessages');
+    msgs.innerHTML = '';
+    const wb = document.getElementById('welcomeBlock');
+    if (wb) wb.style.display = 'none';
+
+    // Replay messages
+    s.messages.forEach(m => {
+      if (m.role === 'user') {
+        xabarQoshRaw('user', m.html || m.content);
+      } else {
+        xabarHtmlQoshRaw('bot', m.html || m.content);
+      }
+    });
+
+    renderHistoryList();
+    // Close history panel on mobile
+    const panel = document.getElementById('historyPanel');
+    if (panel) panel.classList.remove('open');
+  }
+
+  function startNewChat() {
+    newSession();
+    const msgs = document.getElementById('chatMessages');
+    msgs.innerHTML = '';
+    const wb = document.getElementById('welcomeBlock');
+    if (wb) wb.style.display = 'flex';
+    renderHistoryList();
+  }
+
+  function toggleHistoryPanel() {
+    const panel = document.getElementById('historyPanel');
+    const overlay = document.getElementById('histOverlay');
+    if (panel) panel.classList.toggle('open');
+    if (overlay) overlay.style.display = panel && panel.classList.contains('open') ? 'block' : 'none';
+  }
+
+  // Init on load
+  loadSessions();
+  if (!SESSIONS.length) {
+    newSession();
+  } else {
+    CURRENT_SID = SESSIONS[0].id;
+    // Restore last session messages
+    setTimeout(() => {
+      const s = currentSession();
+      if (s && s.messages.length > 0) {
+        const msgs = document.getElementById('chatMessages');
+        msgs.innerHTML = '';
+        const wb = document.getElementById('welcomeBlock');
+        if (wb) wb.style.display = 'none';
+        s.messages.forEach(m => {
+          if (m.role === 'user') xabarQoshRaw('user', m.html || m.content);
+          else xabarHtmlQoshRaw('bot', m.html || m.content);
+        });
+      }
+      renderHistoryList();
+    }, 100);
+  }
 
   // ============================================================
   // TIL ALMASHTIRISH
@@ -2447,10 +2684,16 @@
 
     if (!matn && !TANLANGAN_FAYL) return;
 
-    const korinishMatn = TANLANGAN_FAYL
+    // Ensure we have a session
+    if (!currentSession()) newSession();
+
+    const displayText = TANLANGAN_FAYL
       ? `📄 ${TANLANGAN_FAYL.name}${matn ? '\n' + matn : ''}`
       : matn;
-    xabarQosh('user', korinishMatn);
+
+    // Show user bubble + save to history
+    xabarQosh('user', displayText);
+    sessionAddMsg('user', matn || `[file: ${TANLANGAN_FAYL?.name}]`, displayText.replace(/\n/g, '<br>'));
 
     input.value = '';
     autoResize(input);
@@ -2459,7 +2702,11 @@
     const typing = yozishKorsatish();
 
     try {
-      const sorovTanasi = { message: matn, til: JORIY_TIL };
+      const sorovTanasi = {
+        message: matn,
+        til: JORIY_TIL,
+        history: getContextHistory()
+      };
       if (TANLANGAN_FAYL) sorovTanasi.file = TANLANGAN_FAYL;
 
       const response = await fetch('/api/chat', {
@@ -2470,7 +2717,11 @@
 
       const javob = await response.json();
       typing.remove();
-      xabarHtmlQosh('bot', javobHtmlQil(javob));
+      const botHtml = javobHtmlQil(javob);
+      xabarHtmlQosh('bot', botHtml);
+
+      // Save bot response to history (JSON string as content for context)
+      sessionAddMsg('assistant', JSON.stringify(javob), botHtml);
 
     } catch (err) {
       typing.remove();
@@ -2479,6 +2730,28 @@
 
     faylOchir();
     document.getElementById('sendBtn').disabled = false;
+  }
+
+  // Raw render (for history replay — no save)
+  function xabarQoshRaw(kim, htmlContent) {
+    const messages = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = `message ${kim}`;
+    const avatarHtml = kim === 'user'
+      ? `<div class="message-avatar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>`
+      : `<div class="message-avatar"><img src="/logo.jpg" alt="AI"/></div>`;
+    div.innerHTML = `${avatarHtml}<div class="message-bubble">${htmlContent}</div>`;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function xabarHtmlQoshRaw(kim, html) {
+    const messages = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = `message ${kim}`;
+    div.innerHTML = `<div class="message-avatar"><img src="/logo.jpg" alt="AI"/></div><div class="message-bubble">${html}</div>`;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
   }
 
   function xabarQosh(kim, matn) {

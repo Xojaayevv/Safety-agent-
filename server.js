@@ -335,18 +335,26 @@ const server = http.createServer(async (req, res) => {
     req.on('data', chunk => { body += chunk; });
     req.on('end', async () => {
       try {
-        const { message, til = 'uz', file } = JSON.parse(body);
+        const { message, til = 'uz', file, history = [] } = JSON.parse(body);
         const systemPrompt = SYSTEM_PROMPTS[til] || SYSTEM_PROMPTS.uz;
+
+        // Oxirgi 16 xabarni context sifatida olish (8 ta turn)
+        const contextHistory = history.slice(-16).map(h => ({
+          role: h.role,
+          content: h.content
+        }));
+
         let javobMatn;
 
         if (file) {
           const isRasm = file.type.startsWith('image/');
 
           if (isRasm) {
-            // Rasm — vision model
+            // Rasm — vision model (history qo'shiladi)
             const dataUrl = `data:${file.type};base64,${file.data}`;
-            javobMatn = await groqVisionSorov([
+            const visionMessages = [
               { role: 'system', content: systemPrompt },
+              ...contextHistory,
               {
                 role: 'user',
                 content: [
@@ -354,7 +362,8 @@ const server = http.createServer(async (req, res) => {
                   { type: 'text', text: message || 'Ushbu rasmni xavfsizlik nuqtai nazaridan tahlil qil.' }
                 ]
               }
-            ]);
+            ];
+            javobMatn = await groqVisionSorov(visionMessages);
           } else {
             // PDF, Word yoki txt — matn chiqar va yuborish
             const faylMatn = await faylMatnChiqar(file);
@@ -366,15 +375,17 @@ const server = http.createServer(async (req, res) => {
             const userXabar = `Fayl nomi: ${file.name}\n\nFayl mazmuni:\n${faylMatn}\n\n${message || 'Ushbu hujjatni xavfsizlik nuqtai nazaridan tahlil qil.'}`;
             javobMatn = await groqSorov([
               { role: 'system', content: systemPrompt },
-              { role: 'user',   content: userXabar }
+              ...contextHistory,
+              { role: 'user', content: userXabar }
             ]);
           }
 
         } else {
-          // Oddiy savol — faylsiz
+          // Oddiy savol — history bilan
           javobMatn = await groqSorov([
             { role: 'system', content: systemPrompt },
-            { role: 'user',   content: message }
+            ...contextHistory,
+            { role: 'user', content: message }
           ]);
         }
 
