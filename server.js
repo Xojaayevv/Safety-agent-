@@ -6,7 +6,8 @@
 const http     = require('http');
 const fs       = require('fs');
 const path     = require('path');
-const pdfParse = require('pdf-parse');
+const _pdfParse = require('pdf-parse');
+const pdfParse = typeof _pdfParse === 'function' ? _pdfParse : (_pdfParse.default || _pdfParse);
 const mammoth  = require('mammoth');
 const XLSX     = require('xlsx');
 
