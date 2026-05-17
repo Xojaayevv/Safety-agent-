@@ -6,8 +6,7 @@
 const http     = require('http');
 const fs       = require('fs');
 const path     = require('path');
-const _pdfParse = require('pdf-parse');
-const pdfParse = typeof _pdfParse === 'function' ? _pdfParse : (_pdfParse.default || _pdfParse);
+const { PDFParse } = require('pdf-parse');
 const mammoth  = require('mammoth');
 const XLSX     = require('xlsx');
 
@@ -371,8 +370,13 @@ async function faylMatnChiqar(fileData) {
 
   // PDF fayl
   if (type === 'application/pdf' || name.endsWith('.pdf')) {
-    const result = await pdfParse(buffer);
-    return result.text.slice(0, 8000); // Token limitni saqlash uchun
+    const parser = new PDFParse({ data: buffer });
+    try {
+      const result = await parser.getText();
+      return result.text.slice(0, 8000);
+    } finally {
+      await parser.destroy();
+    }
   }
 
   // Word fayl (.docx)
