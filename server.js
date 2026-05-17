@@ -8,6 +8,7 @@ const fs       = require('fs');
 const path     = require('path');
 const pdfParse = require('pdf-parse');
 const mammoth  = require('mammoth');
+const XLSX     = require('xlsx');
 
 // === Groq API kaliti (muhit o'zgaruvchisidan o'qiladi) ===
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
@@ -198,6 +199,55 @@ If not found, set "found": false and "company": null.`;
 
 const FMCSA_API_KEY = process.env.FMCSA_API_KEY;
 
+const IFTA_PROMPT = `You are an enterprise-grade AI IFTA Processing and Compliance Assistant built for U.S. trucking companies.
+
+Your responsibility is to automatically process uploaded Fuel Reports, ELD Mileage Reports, Trip Reports, and IFTA Excel templates and generate accurate, audit-ready IFTA calculations.
+
+IFTA CALCULATION RULES:
+- Overall MPG = Total Miles ÷ Total Gallons
+- Taxable Gallons per State = State Miles ÷ Overall MPG
+- Tax Due per State = Taxable Gallons × State Fuel Tax Rate
+- Tax Paid per State = Gallons Purchased in State × State Fuel Tax Rate
+- Final Balance per State = Tax Due - Tax Paid (positive = owe, negative = credit/refund)
+
+VALIDATION RULES:
+- Never fabricate fuel gallons or state miles
+- Only use data found in uploaded documents
+- Flag MPG below 5.5 or above 8.5 as suspicious
+- Detect duplicate fuel entries, missing jurisdictions, states with high miles but no fuel purchases
+- Generate warnings for any suspicious patterns
+
+Use current IFTA diesel tax rates for each state. If exact quarter rates are not available use the most recent known rates.
+
+Always return ONLY valid JSON in this exact format:
+{
+  "quarter": "Q3 2024",
+  "trucks": ["Unit 101", "Unit 102"],
+  "total_miles": 45000,
+  "total_gallons": 6617.5,
+  "fleet_mpg": 6.80,
+  "total_tax_due": 1234.56,
+  "total_tax_paid": 1100.00,
+  "balance": 134.56,
+  "states": [
+    {
+      "state": "TX",
+      "miles": 5000,
+      "gallons_used": 735.294,
+      "gallons_purchased": 600.0,
+      "tax_rate": 0.2000,
+      "tax_due": 147.06,
+      "tax_paid": 120.00,
+      "balance": 27.06
+    }
+  ],
+  "warnings": ["Fleet MPG 9.2 is above normal range 5.5-8.5 — verify mileage data"],
+  "summary": "2-3 sentence professional analysis of this IFTA filing and any key risk factors."
+}
+
+If critical data is missing to perform calculations, return:
+{ "error": true, "summary": "Explain clearly what information is missing and what files are needed." }`;
+
 // ============================================================
 // FMCSA SAFER WEB SCRAPER (no API key needed)
 // ============================================================
@@ -333,6 +383,25 @@ async function faylMatnChiqar(fileData) {
   // Oddiy matn fayl
   if (type === 'text/plain' || name.endsWith('.txt')) {
     return buffer.toString('utf8').slice(0, 8000);
+  }
+
+  // CSV fayl
+  if (type === 'text/csv' || name.endsWith('.csv')) {
+    return buffer.toString('utf8').slice(0, 8000);
+  }
+
+  // Excel fayl (.xlsx, .xls)
+  if (name.endsWith('.xlsx') || name.endsWith('.xls') ||
+      type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+      type === 'application/vnd.ms-excel') {
+    const workbook = XLSX.read(buffer, { type: 'buffer' });
+    let text = '';
+    for (const sheetName of workbook.SheetNames) {
+      const sheet = workbook.Sheets[sheetName];
+      const csv = XLSX.utils.sheet_to_csv(sheet);
+      text += `\n--- Sheet: ${sheetName} ---\n${csv}\n`;
+    }
+    return text.slice(0, 10000);
   }
 
   return null; // Rasm yoki noma'lum — alohida ko'rib chiqiladi
@@ -567,6 +636,35 @@ const server = http.createServer(async (req, res) => {
         res.end(JSON.stringify(javobJsonQil(javobMatn)));
       } catch (err) {
         console.error('DataQ xato:', err.message);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ xato: err.message }));
+      }
+    });
+    return;
+  }
+
+  // === IFTA Processing API ===
+  if (req.method === 'POST' && req.url === '/api/ifta') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', async () => {
+      try {
+        const { files = [] } = JSON.parse(body);
+        let combinedText = '';
+        for (const f of files) {
+          const text = await faylMatnChiqar(f);
+          if (text) combinedText += `\n\n=== File: ${f.name} ===\n${text}`;
+          else combinedText += `\n\n=== File: ${f.name} (image/unsupported — describe contents if visible) ===`;
+        }
+        const userMsg = `Please process the following IFTA documents and generate a complete IFTA calculation report.\n\nUploaded files:${combinedText || '\n(No readable files — please upload PDF, Excel, CSV, or text files)'}`;
+        const javobMatn = await groqSorov([
+          { role: 'system', content: IFTA_PROMPT },
+          { role: 'user', content: userMsg }
+        ]);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(javobJsonQil(javobMatn)));
+      } catch (err) {
+        console.error('IFTA xato:', err.message);
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ xato: err.message }));
       }

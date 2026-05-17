@@ -1512,6 +1512,94 @@
     }
 
     /* ================================================================
+       IFTA CALCULATOR PAGE
+    ================================================================ */
+    .ifta-wrap { display:flex; flex-direction:column; flex:1; overflow-y:auto; padding:28px 32px; gap:22px; }
+    .ifta-wrap::-webkit-scrollbar { width:4px; }
+    .ifta-wrap::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
+    .ifta-title { font-size:20px; font-weight:700; color:var(--text-1); }
+    .ifta-sub   { font-size:13px; color:var(--text-3); margin-top:3px; }
+
+    .ifta-upload-zone {
+      border:2px dashed var(--border); border-radius:14px;
+      padding:32px 24px; text-align:center; cursor:pointer;
+      transition:border-color .2s, background .2s; background:var(--bg-2);
+    }
+    .ifta-upload-zone:hover, .ifta-upload-zone.drag { border-color:var(--accent); background:rgba(99,102,241,.06); }
+    .ifta-upload-zone svg { color:var(--text-3); margin-bottom:10px; }
+    .ifta-upload-zone p  { font-size:14px; color:var(--text-2); margin:0; }
+    .ifta-upload-zone span { font-size:12px; color:var(--text-3); }
+    .ifta-file-list { display:flex; flex-direction:column; gap:6px; }
+    .ifta-file-item {
+      display:flex; align-items:center; gap:10px; padding:10px 14px;
+      background:var(--bg-2); border-radius:10px; font-size:13px; color:var(--text-2);
+    }
+    .ifta-file-item svg { color:var(--accent); flex-shrink:0; }
+    .ifta-file-item .ifta-fname { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .ifta-file-del { background:none; border:none; color:var(--text-3); cursor:pointer; padding:2px; line-height:1; }
+    .ifta-file-del:hover { color:#ef4444; }
+
+    .ifta-process-btn {
+      background:var(--accent); color:#fff; border:none; border-radius:12px;
+      padding:13px 28px; font-size:14px; font-weight:600; cursor:pointer;
+      transition:opacity .2s; display:flex; align-items:center; gap:8px; align-self:flex-start;
+    }
+    .ifta-process-btn:hover { opacity:.88; }
+    .ifta-process-btn:disabled { opacity:.5; cursor:default; }
+
+    .ifta-status {
+      padding:14px 18px; background:var(--bg-2); border-radius:12px;
+      font-size:13px; color:var(--text-2); display:flex; align-items:center; gap:10px;
+    }
+    .ifta-status-dot { width:8px; height:8px; border-radius:50%; background:var(--accent); flex-shrink:0; animation:pulse 1.2s infinite; }
+
+    .ifta-summary-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; }
+    .ifta-card {
+      background:var(--bg-2); border-radius:14px; padding:16px 18px;
+      display:flex; flex-direction:column; gap:4px; border:1px solid var(--border);
+    }
+    .ifta-card-label { font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:.04em; }
+    .ifta-card-value { font-size:22px; font-weight:700; color:var(--text-1); }
+    .ifta-card-sub   { font-size:11px; color:var(--text-3); }
+    .ifta-card.due   { border-color:#ef4444; }
+    .ifta-card.due .ifta-card-value { color:#ef4444; }
+    .ifta-card.credit { border-color:#22c55e; }
+    .ifta-card.credit .ifta-card-value { color:#22c55e; }
+
+    .ifta-section-title { font-size:14px; font-weight:600; color:var(--text-1); margin-bottom:8px; }
+    .ifta-table-wrap { overflow-x:auto; border-radius:12px; border:1px solid var(--border); }
+    .ifta-table { width:100%; border-collapse:collapse; font-size:13px; }
+    .ifta-table th {
+      background:var(--bg-2); color:var(--text-3); font-weight:600; font-size:11px;
+      text-transform:uppercase; letter-spacing:.04em; padding:10px 14px; text-align:right;
+      border-bottom:1px solid var(--border);
+    }
+    .ifta-table th:first-child { text-align:left; }
+    .ifta-table td { padding:10px 14px; text-align:right; border-bottom:1px solid var(--border); color:var(--text-2); }
+    .ifta-table td:first-child { text-align:left; font-weight:600; color:var(--text-1); }
+    .ifta-table tr:last-child td { border-bottom:none; }
+    .ifta-table tr.total-row td { background:var(--bg-2); font-weight:700; color:var(--text-1); }
+    .ifta-table .due   { color:#ef4444; font-weight:600; }
+    .ifta-table .credit { color:#22c55e; font-weight:600; }
+    .ifta-table .warn  { color:#f59e0b; }
+
+    .ifta-warnings { display:flex; flex-direction:column; gap:8px; }
+    .ifta-warn-item {
+      display:flex; gap:10px; padding:12px 16px;
+      background:rgba(245,158,11,.08); border:1px solid rgba(245,158,11,.25);
+      border-radius:10px; font-size:13px; color:#f59e0b; align-items:flex-start;
+    }
+    .ifta-warn-item svg { flex-shrink:0; margin-top:1px; }
+
+    .ifta-export-row { display:flex; gap:10px; flex-wrap:wrap; }
+    .ifta-export-btn {
+      background:var(--bg-2); border:1px solid var(--border); border-radius:10px;
+      padding:10px 18px; font-size:13px; color:var(--text-2); cursor:pointer;
+      display:flex; align-items:center; gap:7px; transition:border-color .2s, color .2s;
+    }
+    .ifta-export-btn:hover { border-color:var(--accent); color:var(--accent); }
+
+    /* ================================================================
        HISTORY PAGE
     ================================================================ */
     .hist-page-wrap {
@@ -1597,6 +1685,10 @@
       <button class="nav-item" data-page="dataq" onclick="showPage('dataq')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         <span class="nav-label">DataQ Letter</span>
+      </button>
+      <button class="nav-item" data-page="ifta" onclick="showPage('ifta')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        <span class="nav-label">IFTA Calculator</span>
       </button>
       <button class="nav-item" data-page="history" onclick="showPage('history')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
@@ -1927,6 +2019,105 @@
           </div>
           <div class="dataq-letter-text" id="dataqLetterText"></div>
         </div>
+
+      </div>
+    </div>
+
+    <!-- ===== PAGE: IFTA CALCULATOR ===== -->
+    <div id="page-ifta" class="page-view" style="display:none;">
+      <div class="ifta-wrap">
+
+        <div>
+          <div class="ifta-title">IFTA Calculator</div>
+          <div class="ifta-sub">Upload Fuel Reports, ELD Mileage Reports, Trip Reports, or IFTA Excel/CSV templates — AI processes everything automatically.</div>
+        </div>
+
+        <!-- Upload Zone -->
+        <div class="ifta-upload-zone" id="iftaDropZone"
+             onclick="document.getElementById('iftaFileInput').click()"
+             ondragover="event.preventDefault();this.classList.add('drag')"
+             ondragleave="this.classList.remove('drag')"
+             ondrop="iftaDrop(event)">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <p>Drop files here or click to upload</p>
+          <span>PDF, Excel (.xlsx), CSV, Word (.docx), TXT — multiple files supported</span>
+          <input type="file" id="iftaFileInput" style="display:none" multiple accept=".pdf,.xlsx,.xls,.csv,.docx,.txt" onchange="iftaAddFiles(this.files)"/>
+        </div>
+
+        <!-- File List -->
+        <div class="ifta-file-list" id="iftaFileList"></div>
+
+        <!-- Process Button -->
+        <button class="ifta-process-btn" id="iftaProcessBtn" onclick="iftaProcess()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Process IFTA Reports
+        </button>
+
+        <!-- Status -->
+        <div class="ifta-status" id="iftaStatus" style="display:none">
+          <div class="ifta-status-dot"></div>
+          <span id="iftaStatusText">Analyzing reports...</span>
+        </div>
+
+        <!-- Results -->
+        <div id="iftaResults" style="display:none; display:flex; flex-direction:column; gap:22px;">
+
+          <!-- Summary Cards -->
+          <div>
+            <div class="ifta-section-title">Quarter Summary</div>
+            <div class="ifta-summary-cards" id="iftaCards"></div>
+          </div>
+
+          <!-- State Table -->
+          <div id="iftaTableSection">
+            <div class="ifta-section-title">State-by-State Breakdown</div>
+            <div class="ifta-table-wrap">
+              <table class="ifta-table">
+                <thead>
+                  <tr>
+                    <th>State</th>
+                    <th>Miles</th>
+                    <th>Gal. Used</th>
+                    <th>Gal. Purchased</th>
+                    <th>Tax Rate</th>
+                    <th>Tax Due</th>
+                    <th>Tax Paid</th>
+                    <th>Balance</th>
+                  </tr>
+                </thead>
+                <tbody id="iftaTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Warnings -->
+          <div id="iftaWarningsSection" style="display:none">
+            <div class="ifta-section-title">⚠ Warnings &amp; Flags</div>
+            <div class="ifta-warnings" id="iftaWarningsList"></div>
+          </div>
+
+          <!-- AI Summary -->
+          <div id="iftaSummarySection">
+            <div class="ifta-section-title">AI Analysis</div>
+            <div style="background:var(--bg-2);border-radius:12px;padding:16px 18px;font-size:13px;color:var(--text-2);line-height:1.7;" id="iftaSummaryText"></div>
+          </div>
+
+          <!-- Export -->
+          <div>
+            <div class="ifta-section-title">Export</div>
+            <div class="ifta-export-row">
+              <button class="ifta-export-btn" onclick="iftaExportCSV()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download CSV Report
+              </button>
+              <button class="ifta-export-btn" onclick="iftaCopyText()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copy Summary
+              </button>
+            </div>
+          </div>
+
+        </div><!-- /iftaResults -->
 
       </div>
     </div>
@@ -2280,6 +2471,178 @@
       const btn = document.querySelector('.dataq-copy-btn');
       btn.textContent = 'Copied!';
       setTimeout(() => { btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy`; }, 2000);
+    });
+  }
+
+  // ============================================================
+  // IFTA CALCULATOR
+  // ============================================================
+
+  let IFTA_FILES = [];
+  let IFTA_LAST_DATA = null;
+
+  function iftaAddFiles(files) {
+    for (const f of files) IFTA_FILES.push(f);
+    iftaRenderFileList();
+  }
+
+  function iftaDrop(e) {
+    e.preventDefault();
+    document.getElementById('iftaDropZone').classList.remove('drag');
+    iftaAddFiles(e.dataTransfer.files);
+  }
+
+  function iftaRemoveFile(idx) {
+    IFTA_FILES.splice(idx, 1);
+    iftaRenderFileList();
+  }
+
+  function iftaRenderFileList() {
+    const list = document.getElementById('iftaFileList');
+    if (!IFTA_FILES.length) { list.innerHTML = ''; return; }
+    list.innerHTML = IFTA_FILES.map((f, i) => `
+      <div class="ifta-file-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span class="ifta-fname">${f.name}</span>
+        <span style="font-size:11px;color:var(--text-3)">${(f.size/1024).toFixed(0)} KB</span>
+        <button class="ifta-file-del" onclick="iftaRemoveFile(${i})">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>`).join('');
+  }
+
+  async function iftaProcess() {
+    if (!IFTA_FILES.length) { alert('Please upload at least one IFTA report file.'); return; }
+    const btn = document.getElementById('iftaProcessBtn');
+    const status = document.getElementById('iftaStatus');
+    const statusText = document.getElementById('iftaStatusText');
+    const results = document.getElementById('iftaResults');
+
+    btn.disabled = true;
+    status.style.display = 'flex';
+    results.style.display = 'none';
+    statusText.textContent = 'Reading uploaded files...';
+
+    try {
+      const files = [];
+      for (const f of IFTA_FILES) {
+        const data = await new Promise((res, rej) => {
+          const reader = new FileReader();
+          reader.onload = e => res(e.target.result.split(',')[1]);
+          reader.onerror = rej;
+          reader.readAsDataURL(f);
+        });
+        files.push({ name: f.name, type: f.type, data });
+      }
+
+      statusText.textContent = 'Analyzing mileage, fuel data, and jurisdictions...';
+
+      const resp = await fetch('/api/ifta', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ files })
+      });
+      const data = await resp.json();
+      if (data.xato) throw new Error(data.xato);
+
+      IFTA_LAST_DATA = data;
+      iftaRender(data);
+      status.style.display = 'none';
+      results.style.display = 'flex';
+      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (e) {
+      statusText.textContent = 'Error: ' + e.message;
+      setTimeout(() => { status.style.display = 'none'; }, 4000);
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function iftaRender(d) {
+    // Summary cards
+    const balanceClass = (d.balance > 0) ? 'due' : (d.balance < 0) ? 'credit' : '';
+    const balanceLabel = d.balance > 0 ? 'Amount Due' : d.balance < 0 ? 'Refund' : 'Balance';
+    const balanceVal = '$' + Math.abs(d.balance || 0).toFixed(2);
+    document.getElementById('iftaCards').innerHTML = `
+      <div class="ifta-card"><div class="ifta-card-label">Quarter</div><div class="ifta-card-value" style="font-size:17px">${d.quarter || 'N/A'}</div></div>
+      <div class="ifta-card"><div class="ifta-card-label">Total Miles</div><div class="ifta-card-value">${Number(d.total_miles||0).toLocaleString()}</div></div>
+      <div class="ifta-card"><div class="ifta-card-label">Total Gallons</div><div class="ifta-card-value">${Number(d.total_gallons||0).toFixed(1)}</div></div>
+      <div class="ifta-card"><div class="ifta-card-label">Fleet MPG</div><div class="ifta-card-value" style="${d.fleet_mpg<5.5||d.fleet_mpg>8.5?'color:#f59e0b':''}">${Number(d.fleet_mpg||0).toFixed(2)}</div><div class="ifta-card-sub">Normal: 5.5–8.5</div></div>
+      <div class="ifta-card ${balanceClass}"><div class="ifta-card-label">${balanceLabel}</div><div class="ifta-card-value">${balanceVal}</div></div>
+    `;
+
+    // State table
+    const states = d.states || [];
+    document.getElementById('iftaTableBody').innerHTML = states.map(s => {
+      const bal = (s.balance || 0);
+      const balClass = bal > 0 ? 'due' : bal < 0 ? 'credit' : '';
+      return `<tr>
+        <td>${s.state}</td>
+        <td>${Number(s.miles||0).toLocaleString()}</td>
+        <td>${Number(s.gallons_used||0).toFixed(3)}</td>
+        <td>${Number(s.gallons_purchased||0).toFixed(3)}</td>
+        <td>$${Number(s.tax_rate||0).toFixed(4)}</td>
+        <td>$${Number(s.tax_due||0).toFixed(2)}</td>
+        <td>$${Number(s.tax_paid||0).toFixed(2)}</td>
+        <td class="${balClass}">${bal >= 0 ? '$' : '-$'}${Math.abs(bal).toFixed(2)}</td>
+      </tr>`;
+    }).join('') + `<tr class="total-row">
+      <td>TOTAL</td>
+      <td>${Number(d.total_miles||0).toLocaleString()}</td>
+      <td colspan="2"></td>
+      <td></td>
+      <td>$${Number(d.total_tax_due||0).toFixed(2)}</td>
+      <td>$${Number(d.total_tax_paid||0).toFixed(2)}</td>
+      <td class="${(d.balance||0)>0?'due':'credit'}">$${Math.abs(d.balance||0).toFixed(2)}</td>
+    </tr>`;
+
+    // Warnings
+    const warns = d.warnings || [];
+    const warnSection = document.getElementById('iftaWarningsSection');
+    if (warns.length) {
+      document.getElementById('iftaWarningsList').innerHTML = warns.map(w => `
+        <div class="ifta-warn-item">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          ${w}
+        </div>`).join('');
+      warnSection.style.display = 'block';
+    } else {
+      warnSection.style.display = 'none';
+    }
+
+    // Summary text
+    document.getElementById('iftaSummaryText').textContent = d.summary || d.tushuntirish || '';
+  }
+
+  function iftaExportCSV() {
+    if (!IFTA_LAST_DATA) return;
+    const d = IFTA_LAST_DATA;
+    const rows = [['State','Miles','Gallons Used','Gallons Purchased','Tax Rate','Tax Due','Tax Paid','Balance']];
+    (d.states || []).forEach(s => rows.push([
+      s.state, s.miles, Number(s.gallons_used).toFixed(3), Number(s.gallons_purchased).toFixed(3),
+      s.tax_rate, Number(s.tax_due).toFixed(2), Number(s.tax_paid).toFixed(2), Number(s.balance).toFixed(2)
+    ]));
+    rows.push(['TOTAL', d.total_miles, '', '', '', Number(d.total_tax_due).toFixed(2), Number(d.total_tax_paid).toFixed(2), Number(d.balance).toFixed(2)]);
+    const csv = rows.map(r => r.join(',')).join('\n');
+    const blob = new Blob([`IFTA Report - ${d.quarter || 'Unknown Quarter'}\n\n` + csv], { type: 'text/csv' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = `IFTA_${(d.quarter||'report').replace(/\s/g,'_')}.csv`; a.click();
+  }
+
+  function iftaCopyText() {
+    if (!IFTA_LAST_DATA) return;
+    const d = IFTA_LAST_DATA;
+    let text = `IFTA REPORT — ${d.quarter||''}\n`;
+    text += `Total Miles: ${d.total_miles} | Total Gallons: ${d.total_gallons} | Fleet MPG: ${d.fleet_mpg}\n`;
+    text += `Tax Due: $${d.total_tax_due} | Tax Paid: $${d.total_tax_paid} | Balance: $${d.balance}\n\n`;
+    text += 'State | Miles | Gal Used | Gal Purchased | Rate | Due | Paid | Balance\n';
+    (d.states||[]).forEach(s => {
+      text += `${s.state} | ${s.miles} | ${Number(s.gallons_used).toFixed(2)} | ${Number(s.gallons_purchased).toFixed(2)} | $${s.tax_rate} | $${Number(s.tax_due).toFixed(2)} | $${Number(s.tax_paid).toFixed(2)} | $${Number(s.balance).toFixed(2)}\n`;
+    });
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = event.target.closest('button');
+      const old = btn.innerHTML; btn.textContent = 'Copied!';
+      setTimeout(() => { btn.innerHTML = old; }, 2000);
     });
   }
 
