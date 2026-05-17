@@ -2059,8 +2059,11 @@
           <span id="iftaStatusText">Analyzing reports...</span>
         </div>
 
+        <!-- Error -->
+        <div id="iftaError" style="display:none;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:12px 16px;font-size:13px;color:#ef4444;"></div>
+
         <!-- Results -->
-        <div id="iftaResults" style="display:none; display:flex; flex-direction:column; gap:22px;">
+        <div id="iftaResults" style="display:none; flex-direction:column; gap:22px;">
 
           <!-- Summary Cards -->
           <div>
@@ -2521,6 +2524,7 @@
     btn.disabled = true;
     status.style.display = 'flex';
     results.style.display = 'none';
+    document.getElementById('iftaError').style.display = 'none';
     statusText.textContent = 'Reading uploaded files...';
 
     try {
@@ -2551,8 +2555,10 @@
       results.style.display = 'flex';
       results.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (e) {
-      statusText.textContent = 'Error: ' + e.message;
-      setTimeout(() => { status.style.display = 'none'; }, 4000);
+      document.getElementById('iftaStatus').style.display = 'none';
+      const errDiv = document.getElementById('iftaError');
+      errDiv.textContent = 'Error: ' + e.message;
+      errDiv.style.display = 'block';
     } finally {
       btn.disabled = false;
     }
